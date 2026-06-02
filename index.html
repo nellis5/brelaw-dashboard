@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BRE Law - Client Intake Dashboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        'brand-navy': '#0F1419',
+        'brand-navy-2': '#1A1F2B',
+        'brand-gold': '#B89968',
+        'brand-gold-2': '#C9A574',
+        'brand-cream': '#F5F3EF',
+        'brand-paper': '#FFFFFF',
+        'brand-charcoal': '#2C2C2C',
+        'brand-border': '#E8E4DC',
+      },
+      fontFamily: {
+        serif: ['Cormorant Garamond', 'Georgia', 'serif'],
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+      },
+    },
+  },
+}
+</script>
+<style>
+html, body { font-family: 'Inter', system-ui, sans-serif; }
+h1,h2,h3,h4 { font-family: 'Cormorant Garamond', Georgia, serif; letter-spacing: -0.01em; }
+</style>
+</head>
+<body class="bg-brand-cream text-brand-charcoal min-h-screen flex">
+
+<!-- SIDEBAR -->
+<aside class="w-60 bg-brand-navy text-white flex flex-col fixed h-screen">
+<div class="px-6 py-6 border-b border-white/10">
+<div class="font-serif text-2xl tracking-wide font-bold">BRE LAW</div>
+<div class="text-[10px] uppercase tracking-[0.2em] text-brand-gold mt-1">Bolen Robinson & Ellis</div>
+</div>
+<nav class="flex-1 px-3 py-6 space-y-1">
+<a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white bg-white/10 border-l-2 border-brand-gold">
+<svg class="w-4 h-4 text-brand-gold" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+Overview</a>
+<a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/60 hover:text-white hover:bg-white/5 transition">
+<svg class="w-4 h-4 text-brand-gold/50" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+All Responses</a>
+<a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/60 hover:text-white hover:bg-white/5 transition">
+<svg class="w-4 h-4 text-brand-gold/50" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+Scheduled</a>
+<a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/60 hover:text-white hover:bg-white/5 transition">
+<svg class="w-4 h-4 text-brand-gold/50" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+Reports</a>
+</nav>
+<div class="px-6 py-4 border-t border-white/10 text-[10px] text-white/30">&copy; 2026 BRE Law</div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<div class="flex-1 ml-60 flex flex-col">
+
+<!-- HEADER -->
+<header class="h-16 bg-brand-paper border-b border-brand-border flex items-center justify-between px-8 sticky top-0 z-10">
+<div>
+<h1 class="font-serif text-xl text-brand-navy leading-none">Client Intake Dashboard</h1>
+<div class="h-0.5 w-10 bg-brand-gold mt-2 rounded-full"></div>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-xs text-brand-charcoal/50">Last synced: 2 min ago</span>
+<div class="w-8 h-8 rounded-full bg-brand-gold flex items-center justify-center text-white text-xs font-semibold">NE</div>
+</div>
+</header>
+
+<!-- DASHBOARD CONTENT -->
+<main class="flex-1 p-8">
+
+<!-- KPI ROW -->
+<div class="grid grid-cols-4 gap-6 mb-8">
+
+<!-- Hero KPI -->
+<div class="col-span-1 bg-brand-navy rounded-2xl p-6 text-white shadow-lg">
+<div class="text-[10px] uppercase tracking-[0.18em] text-brand-gold">Total Intakes</div>
+<div class="font-serif text-5xl mt-3 font-bold">247</div>
+<div class="text-xs text-white/50 mt-2">+12% from last month</div>
+</div>
+
+<!-- KPI 2 -->
+<div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
+<div class="text-[10px] uppercase tracking-[0.18em] text-brand-charcoal/50">Scheduled Consultations</div>
+<div class="font-serif text-4xl mt-3 text-brand-navy font-bold">142</div>
+<div class="text-xs text-green-600 mt-2">57.5% conversion</div>
+</div>
+
+<!-- KPI 3 -->
+<div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
+<div class="text-[10px] uppercase tracking-[0.18em] text-brand-charcoal/50">Not Scheduled</div>
+<div class="font-serif text-4xl mt-3 text-brand-navy font-bold">105</div>
+<div class="text-xs text-brand-charcoal/40 mt-2">42.5% of total</div>
+</div>
+
+<!-- KPI 4 -->
+<div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
+<div class="text-[10px] uppercase tracking-[0.18em] text-brand-charcoal/50">Avg. Response Time</div>
+<div class="font-serif text-4xl mt-3 text-brand-navy font-bold">1.4<span class="text-xl">d</span></div>
+<div class="text-xs text-green-600 mt-2">-0.3d vs last month</div>
+</div>
+
+</div>
+
+<!-- CHARTS ROW 1 -->
+<div class="grid grid-cols-2 gap-6 mb-8">
+
+<!-- Intakes Over Time -->
+<div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
+<h3 class="font-serif text-xl text-brand-navy">Intakes Over Time</h3>
+<p class="text-xs text-brand-charcoal/40 mt-1">Monthly trend, last 6 months</p>
+<div class="h-0.5 w-8 bg-brand-gold mt-3 rounded-full"></div>
+<div class="mt-4" style="height:220px"><canvas id="intakesChart"></canvas></div>
+</div>
+
+<!-- Survey Type Breakdown -->
+<div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
+<h3 class="font-serif text-xl text-brand-navy">Survey Type Breakdown</h3>
+<p class="text-xs text-brand-charcoal/40 mt-1">Distribution by response type</p>
+<div class="h-0.5 w-8 bg-brand-gold mt-3 rounded-full"></div>
+<div class="mt-4" style="height:220px"><canvas id="surveyTypeChart"></canvas></div>
+</div>
+
+</div>
+
+<!-- CHARTS ROW 2 -->
+<div class="grid grid-cols-2 gap-6 mb-8">
+
+<!-- No Schedule Reasons -->
+<div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
+<h3 class="font-serif text-xl text-brand-navy">No-Schedule Reasons</h3>
+<p class="text-xs text-brand-charcoal/40 mt-1">Why clients didn't schedule</p>
+<div class="h-0.5 w-8 bg-brand-gold mt-3 rounded-full"></div>
+<div class="mt-4" style="height:220px"><canvas id="reasonsChart"></canvas></div>
+</div>
+
+<!-- Conversion Rate -->
+<div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
+<h3 class="font-serif text-xl text-brand-navy">Scheduled vs. Not Scheduled</h3>
+<p class="text-xs text-brand-charcoal/40 mt-1">Overall conversion breakdown</p>
+<div class="h-0.5 w-8 bg-brand-gold mt-3 rounded-full"></div>
+<div class="mt-4" style="height:220px"><canvas id="conversionChart"></canvas></div>
+</div>
+
+</div>
+
+<!-- RECENT RESPONSES TABLE -->
+<div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
+<h3 class="font-serif text-xl text-brand-navy">Recent Survey Responses</h3>
+<p class="text-xs text-brand-charcoal/40 mt-1">Latest intake survey submissions</p>
+<div class="h-0.5 w-8 bg-brand-gold mt-3 rounded-full mb-4"></div>
+<div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead>
+<tr class="border-b border-brand-border">
+<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy text-sm">ID</th>
+<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy text-sm">Name</th>
+<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy text-sm">Email</th>
+<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy text-sm">Survey Type</th>
+<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy text-sm">Scheduled</th>
+<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy text-sm">Date</th>
+</tr>
+</thead>
+<tbody>
+<tr class="border-b border-brand-border/50 hover:bg-brand-cream/50 transition">
+<td class="py-3 px-4 text-brand-charcoal/70">247</td>
+<td class="py-3 px-4 font-medium">Sarah Mitchell</td>
+<td class="py-3 px-4 text-brand-charcoal/60">s.mitchell@email.com</td>
+<td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-gold/10 text-brand-gold">Personal Injury</span></td>
+<td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-green-50 text-green-700">Yes</span></td>
+<td class="py-3 px-4 text-brand-charcoal/50">Jun 2, 2026</td>
+</tr>
+<tr class="border-b border-brand-border/50 hover:bg-brand-cream/50 transition">
+<td class="py-3 px-4 text-brand-charcoal/70">246</td>
+<td class="py-3 px-4 font-medium">James Thornton</td>
+<td class="py-3 px-4 text-brand-charcoal/60">j.thornton@email.com</td>
+<td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-navy/10 text-brand-navy">Family Law</span></td>
+<td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-red-50 text-red-600">No</span></td>
+<td class="py-3 px-4 text-brand-charcoal/50">Jun 1, 2026</td>
+</tr>
+<tr class="border-b border-brand-border/50 hover:bg-brand-cream/50 transition">
+<td class="py-3 px-4 text-brand-charcoal/70">245</td>
+<td class="py-3 px-4 font-medium">Maria Chen</td>
+<td class="py-3 px-4 text-brand-charcoal/60">m.chen@email.com</td>
+<td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-gold/10 text-brand-gold">Business Law</span></td>
+<td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-green-50 text-green-700">Yes</span></td>
+<td class="py-3 px-4 text-brand-charcoal/50">May 31, 2026</td>
+</tr>
+<tr class="border-b border-brand-border/50 hover:bg-brand-cream/50 transition">
+<td class="py-3 px-4 text-brand-charcoal/70">244</td>
+<td class="py-3 px-4 font-medium">Robert Davis</td>
+<td class="py-3 px-4 text-brand-charcoal/60">r.davis@email.com</td>
+<td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-navy/10 text-brand-navy">Estate Planning</span></td>
+<td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-green-50 text-green-700">Yes</span></td>
+<td class="py-3 px-4 text-brand-charcoal/50">May 30, 2026</td>
+</tr>
+<tr class="hover:bg-brand-cream/50 transition">
+<td class="py-3 px-4 text-brand-charcoal/70">243</td>
+<td class="py-3 px-4 font-medium">Emily Watson</td>
+<td class="py-3 px-4 text-brand-charcoal/60">e.watson@email.com</td>
+<td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-gold/10 text-brand-gold">DUI/Criminal</span></td>
+<td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-red-50 text-red-600">No</span></td>
+<td class="py-3 px-4 text-brand-charcoal/50">May 29, 2026</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+</main>
+</div>
+
+<!-- CHART.JS SCRIPTS -->
+<script>
+const GOLD = '#B89968';
+const NAVY = '#0F1419';
+const GOLD2 = '#C9A574';
+const CREAM = '#F5F3EF';
+const BORDER = '#E8E4DC';
+
+Chart.defaults.font.family = 'Inter, system-ui, sans-serif';
+Chart.defaults.font.size = 11;
+Chart.defaults.color = '#2C2C2C80';
+
+// 1. Intakes Over Time (Area)
+new Chart(document.getElementById('intakesChart'), {
+type: 'line',
+data: {
+labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+datasets: [{
+label: 'Total Intakes',
+data: [28, 35, 42, 38, 52, 52],
+borderColor: GOLD,
+backgroundColor: GOLD + '20',
+fill: true,
+tension: 0.4,
+pointBackgroundColor: GOLD,
+pointRadius: 4,
+pointHoverRadius: 6,
+borderWidth: 2,
+}, {
+label: 'Scheduled',
+data: [15, 20, 28, 22, 32, 25],
+borderColor: NAVY,
+backgroundColor: NAVY + '10',
+fill: true,
+tension: 0.4,
+pointBackgroundColor: NAVY,
+pointRadius: 3,
+pointHoverRadius: 5,
+borderWidth: 2,
+}]
+},
+options: {
+responsive: true, maintainAspectRatio: false,
+plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 16 } } },
+scales: {
+y: { beginAtZero: true, grid: { color: BORDER }, border: { display: false } },
+x: { grid: { display: false }, border: { display: false } }
+}
+}
+});
+
+// 2. Survey Type (Donut)
+new Chart(document.getElementById('surveyTypeChart'), {
+type: 'doughnut',
+data: {
+labels: ['Personal Injury', 'Family Law', 'Business Law', 'Estate Planning', 'DUI/Criminal', 'Real Estate'],
+datasets: [{
+data: [72, 48, 38, 35, 30, 24],
+backgroundColor: [GOLD, NAVY, GOLD2, '#8B7355', '#D4C5A9', '#4A4A4A'],
+borderWidth: 0,
+hoverOffset: 8,
+}]
+},
+options: {
+responsive: true, maintainAspectRatio: false,
+cutout: '65%',
+plugins: { legend: { position: 'right', labels: { usePointStyle: true, padding: 12, font: { size: 11 } } } }
+}
+});
+
+// 3. No-Schedule Reasons (Horizontal Bar)
+new Chart(document.getElementById('reasonsChart'), {
+type: 'bar',
+data: {
+labels: ['Cost concerns', 'Not ready', 'Found other attorney', 'No response', 'Resolved independently', 'Other'],
+datasets: [{
+label: 'Count',
+data: [32, 25, 18, 15, 10, 5],
+backgroundColor: GOLD,
+borderRadius: 6,
+barThickness: 18,
+}]
+},
+options: {
+responsive: true, maintainAspectRatio: false,
+indexAxis: 'y',
+plugins: { legend: { display: false } },
+scales: {
+x: { beginAtZero: true, grid: { color: BORDER }, border: { display: false } },
+y: { grid: { display: false }, border: { display: false } }
+}
+}
+});
+
+// 4. Conversion (Donut)
+new Chart(document.getElementById('conversionChart'), {
+type: 'doughnut',
+data: {
+labels: ['Scheduled', 'Not Scheduled'],
+datasets: [{
+data: [142, 105],
+backgroundColor: [GOLD, NAVY],
+borderWidth: 0,
+hoverOffset: 8,
+}]
+},
+options: {
+responsive: true, maintainAspectRatio: false,
+cutout: '70%',
+plugins: {
+legend: { position: 'bottom', labels: { usePointStyle: true, padding: 16 } },
+}
+}
+});
+</script>
+
+</body>
+</html>
