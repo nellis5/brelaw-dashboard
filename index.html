@@ -6,8 +6,26 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4/dist/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script>tailwind.config={theme:{extend:{colors:{'brand-navy':'#0F1419','brand-navy-2':'#1A1F2B','brand-gold':'#B89968','brand-gold-2':'#C9A574','brand-cream':'#F5F3EF','brand-paper':'#FFFFFF','brand-charcoal':'#2C2C2C','brand-border':'#E8E4DC'},fontFamily:{serif:['Cormorant Garamond','Georgia','serif'],sans:['Inter','system-ui','sans-serif']}}}}</script>
-<style>html,body{font-family:'Inter',system-ui,sans-serif}h1,h2,h3,h4{font-family:'Cormorant Garamond',Georgia,serif;letter-spacing:-0.01em}.nav-active{background:rgba(255,255,255,0.1);border-left:2px solid #B89968}.page{display:none}.page.active{display:block}</style>
-</head><body class="bg-brand-cream text-brand-charcoal min-h-screen flex">
+<style>html,body{font-family:'Inter',system-ui,sans-serif}h1,h2,h3,h4{font-family:'Cormorant Garamond',Georgia,serif;letter-spacing:-0.01em}.nav-active{background:rgba(255,255,255,0.1);border-left:2px solid #B89968}.page{display:none}.page.active{display:block}#login-screen{display:flex}#app{display:none}</style>
+</head><body class="bg-brand-cream text-brand-charcoal min-h-screen">
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen" class="min-h-screen flex items-center justify-center bg-brand-navy">
+<div class="bg-brand-paper rounded-2xl shadow-2xl p-10 w-full max-w-md">
+<div class="text-center mb-8"><img src="https://brelaw.com/wp-content/uploads/2024/06/footer-logo.png" alt="BRE Law" class="w-44 mx-auto mb-6 invert"><h1 class="text-2xl text-brand-navy font-semibold">Client Intake Dashboard</h1><p class="text-sm text-brand-charcoal/50 mt-1">Sign in to access survey analytics</p></div>
+<div class="space-y-4">
+<div><label class="text-[11px] uppercase tracking-wider text-brand-charcoal/50 block mb-1.5">Email Address</label><input id="login-email" type="email" placeholder="you@brelaw.com" class="w-full px-4 py-2.5 border border-brand-border rounded-lg text-sm focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/30"></div>
+<div><label class="text-[11px] uppercase tracking-wider text-brand-charcoal/50 block mb-1.5">Password</label><input id="login-pass" type="password" placeholder="Enter password" class="w-full px-4 py-2.5 border border-brand-border rounded-lg text-sm focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/30"></div>
+<div class="flex items-center justify-between text-sm"><label class="flex items-center gap-2 text-brand-charcoal/60"><input type="checkbox" class="rounded border-brand-border"> Remember me</label><a href="#" class="text-brand-gold hover:underline">Forgot password?</a></div>
+<button onclick="doLogin()" class="w-full bg-brand-navy text-white py-2.5 rounded-lg text-sm font-medium hover:bg-brand-navy-2 transition">Sign In</button>
+<p id="login-error" class="text-red-500 text-xs text-center hidden">Invalid credentials. Please try again.</p>
+</div>
+<div class="mt-8 pt-6 border-t border-brand-border text-center"><p class="text-[11px] text-brand-charcoal/40">Bolen Robinson & Ellis, LLP &middot; 202 South Franklin Street, 2d Floor, Decatur, IL 62523</p></div>
+</div>
+</div>
+
+<!-- DASHBOARD APP -->
+<div id="app" class="flex">
 <aside class="w-60 bg-brand-navy text-white flex flex-col fixed h-screen">
 <div class="px-6 py-5 border-b border-white/10"><img src="https://brelaw.com/wp-content/uploads/2024/06/footer-logo.png" alt="BRE Law" class="w-36 opacity-90"></div>
 <nav class="flex-1 px-3 py-6 space-y-1">
@@ -16,21 +34,28 @@
 <a href="#" onclick="showPage('notsigned')" id="nav-notsigned" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/60 hover:text-white hover:bg-white/5 transition"><svg class="w-4 h-4 text-brand-gold/50" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg>Not Signed</a>
 <a href="#" onclick="showPage('responses')" id="nav-responses" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/60 hover:text-white hover:bg-white/5 transition"><svg class="w-4 h-4 text-brand-gold/50" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Responses</a>
 </nav>
+<div class="px-3 py-3"><button onclick="doLogout()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/40 hover:text-white hover:bg-white/5 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h5a2 2 0 012 2v1"/></svg>Sign Out</button></div>
 <div class="px-6 py-4 border-t border-white/10 text-[10px] text-white/30">&copy; 2026 BRE Law</div>
 </aside>
 <main class="flex-1 ml-60">
 <header class="bg-brand-paper border-b border-brand-border px-10 py-5 flex items-center justify-between">
 <div><h1 id="page-title" class="text-2xl text-brand-navy font-semibold">Overview</h1><p class="text-xs text-brand-charcoal/50 mt-0.5">Last synced: 2 min ago</p></div>
-<div class="flex items-center gap-3"><div class="text-right"><div class="text-sm font-medium">BRE Law</div><div class="text-[11px] text-brand-charcoal/50">Intake Team</div></div><div class="w-9 h-9 rounded-full bg-brand-gold text-white flex items-center justify-center text-xs font-semibold">NE</div></div>
+<div class="flex items-center gap-3"><div class="text-right"><div class="text-sm font-medium" id="user-name">BRE Law</div><div class="text-[11px] text-brand-charcoal/50">Intake Team</div></div><div class="w-9 h-9 rounded-full bg-brand-gold text-white flex items-center justify-center text-xs font-semibold">NE</div></div>
 </header>
 
 <section id="page-overview" class="page active px-10 py-8">
 <div class="mb-6"><h2 class="text-xl text-brand-navy font-semibold">Brooke — Intake Specialist Snapshot</h2><p class="text-xs text-brand-charcoal/50">Performance summary across all surveys</p></div>
-<div class="grid grid-cols-4 gap-5 mb-8">
+<div class="grid grid-cols-4 gap-5 mb-5">
 <div class="bg-brand-paper border border-brand-border rounded-xl p-5"><div class="text-[11px] uppercase tracking-wider text-brand-charcoal/50 mb-2">Avg Friendliness</div><div class="text-3xl font-semibold text-brand-navy">4.8<span class="text-base text-brand-charcoal/40"> / 5</span></div><div class="text-[11px] text-brand-gold mt-1">★★★★★</div></div>
-<div class="bg-brand-paper border border-brand-border rounded-xl p-5"><div class="text-[11px] uppercase tracking-wider text-brand-charcoal/50 mb-2">Avg Overall</div><div class="text-3xl font-semibold text-brand-navy">4.6<span class="text-base text-brand-charcoal/40"> / 5</span></div><div class="text-[11px] text-brand-gold mt-1">★★★★☆</div></div>
+<div class="bg-brand-paper border border-brand-border rounded-xl p-5"><div class="text-[11px] uppercase tracking-wider text-brand-charcoal/50 mb-2">Avg Overall Experience</div><div class="text-3xl font-semibold text-brand-navy">4.6<span class="text-base text-brand-charcoal/40"> / 5</span></div><div class="text-[11px] text-brand-gold mt-1">★★★★☆</div></div>
 <div class="bg-brand-paper border border-brand-border rounded-xl p-5"><div class="text-[11px] uppercase tracking-wider text-brand-charcoal/50 mb-2">Total Surveys</div><div class="text-3xl font-semibold text-brand-navy">247</div><div class="text-[11px] text-brand-charcoal/60 mt-1">All-time responses</div></div>
 <div class="bg-brand-paper border border-brand-border rounded-xl p-5"><div class="text-[11px] uppercase tracking-wider text-brand-charcoal/50 mb-2">Low-Score Count</div><div class="text-3xl font-semibold text-brand-navy">11</div><div class="text-[11px] text-brand-charcoal/60 mt-1">Ratings of 1 or 2 (needs review)</div></div>
+</div>
+<div class="grid grid-cols-4 gap-5 mb-8">
+<div class="bg-brand-paper border border-brand-border rounded-xl p-5"><div class="text-[11px] uppercase tracking-wider text-brand-charcoal/50 mb-2">% Signed</div><div class="text-3xl font-semibold text-brand-navy">57.5%</div><div class="text-[11px] text-brand-charcoal/60 mt-1">142 of 247 scheduled</div></div>
+<div class="bg-brand-paper border border-brand-border rounded-xl p-5"><div class="text-[11px] uppercase tracking-wider text-brand-charcoal/50 mb-2">% Not Signed</div><div class="text-3xl font-semibold text-brand-navy">42.5%</div><div class="text-[11px] text-brand-charcoal/60 mt-1">105 of 247 did not schedule</div></div>
+<div class="bg-brand-paper border border-brand-border rounded-xl p-5"><div class="text-[11px] uppercase tracking-wider text-brand-charcoal/50 mb-2">Hire Rate</div><div class="text-3xl font-semibold text-brand-navy">68.3%</div><div class="text-[11px] text-brand-charcoal/60 mt-1">97 of 142 hired BRE Law</div></div>
+<div class="bg-brand-paper border border-brand-border rounded-xl p-5"><div class="text-[11px] uppercase tracking-wider text-brand-charcoal/50 mb-2">Channel Mix</div><div class="text-xl font-semibold text-brand-navy">64% Phone</div><div class="text-[11px] text-brand-charcoal/60 mt-1">36% via website</div></div>
 </div>
 <div class="grid grid-cols-2 gap-5">
 <div class="bg-brand-paper border border-brand-border rounded-xl p-6"><h3 class="text-lg text-brand-navy font-semibold mb-1">Survey Volume Over Time</h3><p class="text-xs text-brand-charcoal/50 mb-4">Last 6 months</p><div class="h-64"><canvas id="overviewVolume"></canvas></div></div>
@@ -38,12 +63,11 @@
 </div>
 </section>
 
-
 <section id="page-ratings" class="page px-10 py-8">
 <div class="grid grid-cols-5 gap-5 mb-8">
 <div class="bg-brand-paper border border-brand-border rounded-xl p-5"><div class="text-[11px] uppercase tracking-wider text-brand-charcoal/50 mb-2">Friendliness</div><div class="text-3xl font-semibold text-brand-navy">4.8<span class="text-base text-brand-charcoal/40"> / 5</span></div></div>
 <div class="bg-brand-paper border border-brand-border rounded-xl p-5"><div class="text-[11px] uppercase tracking-wider text-brand-charcoal/50 mb-2">Overall Experience</div><div class="text-3xl font-semibold text-brand-navy">4.6<span class="text-base text-brand-charcoal/40"> / 5</span></div></div>
-<div class="bg-brand-paper border border-brand-border rounded-xl p-5"><div class="text-[11px] uppercase tracking-wider text-brand-charcoal/50 mb-2">Consultation Exp.</div><div class="text-3xl font-semibold text-brand-navy">4.5<span class="text-base text-brand-charcoal/40"> / 5</span></div></div>
+<div class="bg-brand-paper border border-brand-border rounded-xl p-5"><div class="text-[11px] uppercase tracking-wider text-brand-charcoal/50 mb-2">Consultation Experience</div><div class="text-3xl font-semibold text-brand-navy">4.5<span class="text-base text-brand-charcoal/40"> / 5</span></div></div>
 <div class="bg-brand-paper border border-brand-border rounded-xl p-5"><div class="text-[11px] uppercase tracking-wider text-brand-charcoal/50 mb-2">Responsiveness</div><div class="text-3xl font-semibold text-brand-navy">4.7<span class="text-base text-brand-charcoal/40"> / 5</span></div></div>
 <div class="bg-brand-paper border border-brand-border rounded-xl p-5"><div class="text-[11px] uppercase tracking-wider text-brand-charcoal/50 mb-2">Knowledge</div><div class="text-3xl font-semibold text-brand-navy">4.5<span class="text-base text-brand-charcoal/40"> / 5</span></div></div>
 </div>
@@ -88,7 +112,7 @@
 <div class="flex gap-2"><input type="text" placeholder="Search by name..." class="text-sm px-3 py-1.5 border border-brand-border rounded-lg bg-brand-cream focus:outline-none focus:border-brand-gold"><select class="text-sm px-3 py-1.5 border border-brand-border rounded-lg bg-brand-cream"><option>All Types</option><option>Scheduled</option><option>Not Scheduled</option></select></div>
 </div>
 <div class="overflow-x-auto"><table class="w-full text-sm">
-<thead><tr class="border-b border-brand-border text-[11px] uppercase tracking-wider text-brand-charcoal/50"><th class="text-left py-3 px-2">Name</th><th class="text-left py-3 px-2">Type</th><th class="text-left py-3 px-2">Channel</th><th class="text-center py-3 px-2">Overall</th><th class="text-center py-3 px-2">Friendly</th><th class="text-center py-3 px-2">Responsive</th><th class="text-center py-3 px-2">Knowledge</th><th class="text-center py-3 px-2">Consult</th><th class="text-left py-3 px-2">Hired</th><th class="text-left py-3 px-2">No-Schedule Reason</th><th class="text-left py-3 px-2">Feedback</th><th class="text-left py-3 px-2">Date</th></tr></thead>
+<thead><tr class="border-b border-brand-border text-[11px] uppercase tracking-wider text-brand-charcoal/50"><th class="text-left py-3 px-2">Name</th><th class="text-left py-3 px-2">Type</th><th class="text-left py-3 px-2">Channel</th><th class="text-center py-3 px-2">Overall</th><th class="text-center py-3 px-2">Friendly</th><th class="text-center py-3 px-2">Responsive</th><th class="text-center py-3 px-2">Knowledge</th><th class="text-center py-3 px-2">Experience</th><th class="text-left py-3 px-2">Hired</th><th class="text-left py-3 px-2">No-Schedule Reason</th><th class="text-left py-3 px-2">Feedback</th><th class="text-left py-3 px-2">Date</th></tr></thead>
 <tbody class="divide-y divide-brand-border">
 <tr><td class="py-3 px-2 font-medium">Sarah Mitchell</td><td class="py-3 px-2"><span class="text-[11px] px-2 py-0.5 rounded bg-brand-gold/15 text-brand-gold">Scheduled</span></td><td class="py-3 px-2">Phone</td><td class="py-3 px-2 text-center">5</td><td class="py-3 px-2 text-center">5</td><td class="py-3 px-2 text-center">5</td><td class="py-3 px-2 text-center">5</td><td class="py-3 px-2 text-center">5</td><td class="py-3 px-2">Yes</td><td class="py-3 px-2 text-brand-charcoal/40">—</td><td class="py-3 px-2 text-xs text-brand-charcoal/70">Outstanding experience!</td><td class="py-3 px-2 text-brand-charcoal/60">Jun 2</td></tr>
 <tr><td class="py-3 px-2 font-medium">James Thornton</td><td class="py-3 px-2"><span class="text-[11px] px-2 py-0.5 rounded bg-brand-navy/10 text-brand-navy">Not Sched.</span></td><td class="py-3 px-2">Website</td><td class="py-3 px-2 text-center">4</td><td class="py-3 px-2 text-center">5</td><td class="py-3 px-2 text-center">4</td><td class="py-3 px-2 text-center">4</td><td class="py-3 px-2 text-center text-brand-charcoal/40">—</td><td class="py-3 px-2">—</td><td class="py-3 px-2 text-xs">Cost / fees too high</td><td class="py-3 px-2 text-xs text-brand-charcoal/70">Brooke was very kind.</td><td class="py-3 px-2 text-brand-charcoal/60">Jun 1</td></tr>
@@ -104,22 +128,23 @@
 </section>
 
 </main>
+</div>
 
 <script>
+function doLogin(){document.getElementById('login-screen').style.display='none';document.getElementById('app').style.display='flex';initOverviewCharts()}
+function doLogout(){document.getElementById('app').style.display='none';document.getElementById('login-screen').style.display='flex'}
+document.addEventListener('keydown',function(e){if(e.key==='Enter'&&document.getElementById('login-screen').style.display!=='none')doLogin()});
 const G='#B89968',N='#0F1419',G2='#C9A574',B='#E8E4DC';
 Chart.defaults.font.family='Inter,system-ui,sans-serif';Chart.defaults.font.size=11;Chart.defaults.color='#2C2C2C80';
 const titles={overview:'Overview',ratings:'Ratings',notsigned:'Not Signed',responses:'Responses'};
-let ratingsInit=false,notSignedInit=false;
+let ratingsInit=false,notSignedInit=false,overviewInit=false;
 function showPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');document.getElementById('page-title').textContent=titles[p];document.querySelectorAll('.nav-link').forEach(l=>{l.classList.remove('nav-active','text-white');l.classList.add('text-white/60')});const n=document.getElementById('nav-'+p);n.classList.add('nav-active','text-white');n.classList.remove('text-white/60');if(p==='ratings'&&!ratingsInit){initRatings();ratingsInit=true}if(p==='notsigned'&&!notSignedInit){initNotSigned();notSignedInit=true}}
-
+function initOverviewCharts(){if(overviewInit)return;overviewInit=true;
 new Chart(document.getElementById('overviewVolume'),{type:'line',data:{labels:['Jan','Feb','Mar','Apr','May','Jun'],datasets:[{label:'Total Surveys',data:[28,35,42,38,52,52],borderColor:G,backgroundColor:G+'20',fill:true,tension:0.4,pointBackgroundColor:G,pointRadius:4,borderWidth:2},{label:'Scheduled',data:[15,20,28,22,32,25],borderColor:N,backgroundColor:N+'10',fill:true,tension:0.4,pointBackgroundColor:N,pointRadius:3,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:16}}},scales:{y:{beginAtZero:true,grid:{color:B},border:{display:false}},x:{grid:{display:false},border:{display:false}}}}});
-
-new Chart(document.getElementById('overviewMix'),{type:'radar',data:{labels:['Friendliness','Overall','Consultation','Responsiveness','Knowledge'],datasets:[{label:'Average',data:[4.8,4.6,4.5,4.7,4.5],borderColor:G,backgroundColor:G+'30',pointBackgroundColor:G,pointRadius:4,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,scales:{r:{beginAtZero:true,max:5,ticks:{stepSize:1,display:false},grid:{color:B},pointLabels:{font:{size:11}}}},plugins:{legend:{display:false}}}});
-
+new Chart(document.getElementById('overviewMix'),{type:'radar',data:{labels:['Friendliness','Overall','Consultation Experience','Responsiveness','Knowledge'],datasets:[{label:'Average',data:[4.8,4.6,4.5,4.7,4.5],borderColor:G,backgroundColor:G+'30',pointBackgroundColor:G,pointRadius:4,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,scales:{r:{beginAtZero:true,max:5,ticks:{stepSize:1,display:false},grid:{color:B},pointLabels:{font:{size:11}}}},plugins:{legend:{display:false}}}});}
 function initRatings(){
-new Chart(document.getElementById('ratingTrends'),{type:'line',data:{labels:['Jan','Feb','Mar','Apr','May','Jun'],datasets:[{label:'Friendliness',data:[4.6,4.7,4.8,4.7,4.9,4.8],borderColor:G,tension:0.4,pointRadius:3,borderWidth:2},{label:'Overall',data:[4.3,4.4,4.5,4.5,4.7,4.6],borderColor:N,tension:0.4,pointRadius:3,borderWidth:2},{label:'Consultation',data:[4.2,4.3,4.4,4.5,4.6,4.5],borderColor:G2,tension:0.4,pointRadius:3,borderWidth:2},{label:'Responsiveness',data:[4.5,4.6,4.6,4.7,4.8,4.7],borderColor:'#8B7355',tension:0.4,pointRadius:3,borderWidth:2},{label:'Knowledge',data:[4.3,4.4,4.5,4.4,4.6,4.5],borderColor:'#D4C5A9',tension:0.4,pointRadius:3,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:12,font:{size:10}}}},scales:{y:{min:3,max:5,grid:{color:B},border:{display:false}},x:{grid:{display:false},border:{display:false}}}}});
+new Chart(document.getElementById('ratingTrends'),{type:'line',data:{labels:['Jan','Feb','Mar','Apr','May','Jun'],datasets:[{label:'Friendliness',data:[4.6,4.7,4.8,4.7,4.9,4.8],borderColor:G,tension:0.4,pointRadius:3,borderWidth:2},{label:'Overall',data:[4.3,4.4,4.5,4.5,4.7,4.6],borderColor:N,tension:0.4,pointRadius:3,borderWidth:2},{label:'Consultation Experience',data:[4.2,4.3,4.4,4.5,4.6,4.5],borderColor:G2,tension:0.4,pointRadius:3,borderWidth:2},{label:'Responsiveness',data:[4.5,4.6,4.6,4.7,4.8,4.7],borderColor:'#8B7355',tension:0.4,pointRadius:3,borderWidth:2},{label:'Knowledge',data:[4.3,4.4,4.5,4.4,4.6,4.5],borderColor:'#D4C5A9',tension:0.4,pointRadius:3,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:12,font:{size:10}}}},scales:{y:{min:3,max:5,grid:{color:B},border:{display:false}},x:{grid:{display:false},border:{display:false}}}}});
 new Chart(document.getElementById('ratingDist'),{type:'bar',data:{labels:['1','2','3','4','5'],datasets:[{label:'Count',data:[3,8,28,85,123],backgroundColor:[N,'#4A4A4A','#8B7355',G2,G],borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:B},border:{display:false}},x:{grid:{display:false},border:{display:false}}}}});}
-
 function initNotSigned(){
 new Chart(document.getElementById('reasonsChart'),{type:'bar',data:{labels:['Cost / fees too high','Decided to use a different firm','Decided not to pursue legal matter','Time to get consultation','Other'],datasets:[{label:'Count',data:[35,24,22,16,8],backgroundColor:G,borderRadius:6,barThickness:18}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,grid:{color:B},border:{display:false}},y:{grid:{display:false},border:{display:false}}}}});
 new Chart(document.getElementById('reasonsTrend'),{type:'bar',data:{labels:['Jan','Feb','Mar','Apr','May','Jun'],datasets:[{label:'Cost/fees',data:[4,5,6,7,6,7],backgroundColor:G,borderRadius:4},{label:'Different firm',data:[3,3,4,4,5,5],backgroundColor:N,borderRadius:4},{label:'Not pursuing',data:[2,3,3,4,5,5],backgroundColor:G2,borderRadius:4},{label:'Time to consult',data:[2,2,3,2,3,4],backgroundColor:'#8B7355',borderRadius:4},{label:'Other',data:[1,1,1,2,1,2],backgroundColor:'#D4C5A9',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:10,font:{size:10}}}},scales:{y:{beginAtZero:true,grid:{color:B},border:{display:false},stacked:true},x:{grid:{display:false},border:{display:false},stacked:true}}}});}
