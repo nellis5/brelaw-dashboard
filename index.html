@@ -32,27 +32,29 @@ tailwind.config = {
 <style>
 html, body { font-family: 'Inter', system-ui, sans-serif; }
 h1,h2,h3,h4 { font-family: 'Cormorant Garamond', Georgia, serif; letter-spacing: -0.01em; }
+.nav-active { background: rgba(255,255,255,0.1); border-left: 2px solid #B89968; }
+.page { display: none; }
+.page.active { display: block; }
 </style>
 </head>
 <body class="bg-brand-cream text-brand-charcoal min-h-screen flex">
 
 <!-- SIDEBAR -->
 <aside class="w-60 bg-brand-navy text-white flex flex-col fixed h-screen">
-<div class="px-6 py-6 border-b border-white/10">
-<div class="font-serif text-2xl tracking-wide font-bold">BRE LAW</div>
-<div class="text-[10px] uppercase tracking-[0.2em] text-brand-gold mt-1">Bolen Robinson & Ellis</div>
+<div class="px-6 py-5 border-b border-white/10">
+<img src="https://brelaw.com/wp-content/uploads/2024/06/footer-logo.png" alt="BRE Law" class="w-36 opacity-90">
 </div>
 <nav class="flex-1 px-3 py-6 space-y-1">
-<a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white bg-white/10 border-l-2 border-brand-gold">
+<a href="#" onclick="showPage('overview')" id="nav-overview" class="nav-link nav-active flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white">
 <svg class="w-4 h-4 text-brand-gold" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
 Overview</a>
-<a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/60 hover:text-white hover:bg-white/5 transition">
+<a href="#" onclick="showPage('responses')" id="nav-responses" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/60 hover:text-white hover:bg-white/5 transition">
 <svg class="w-4 h-4 text-brand-gold/50" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
 All Responses</a>
-<a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/60 hover:text-white hover:bg-white/5 transition">
+<a href="#" onclick="showPage('scheduled')" id="nav-scheduled" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/60 hover:text-white hover:bg-white/5 transition">
 <svg class="w-4 h-4 text-brand-gold/50" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
 Scheduled</a>
-<a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/60 hover:text-white hover:bg-white/5 transition">
+<a href="#" onclick="showPage('reports')" id="nav-reports" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/60 hover:text-white hover:bg-white/5 transition">
 <svg class="w-4 h-4 text-brand-gold/50" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
 Reports</a>
 </nav>
@@ -65,7 +67,7 @@ Reports</a>
 <!-- HEADER -->
 <header class="h-16 bg-brand-paper border-b border-brand-border flex items-center justify-between px-8 sticky top-0 z-10">
 <div>
-<h1 class="font-serif text-xl text-brand-navy leading-none">Client Intake Dashboard</h1>
+<h1 class="font-serif text-xl text-brand-navy leading-none" id="page-title">Overview</h1>
 <div class="h-0.5 w-10 bg-brand-gold mt-2 rounded-full"></div>
 </div>
 <div class="flex items-center gap-4">
@@ -74,265 +76,257 @@ Reports</a>
 </div>
 </header>
 
-<!-- DASHBOARD CONTENT -->
-<main class="flex-1 p-8">
+<!-- PAGE: OVERVIEW -->
+<div id="page-overview" class="page active flex-1 p-8">
 
 <!-- KPI ROW -->
 <div class="grid grid-cols-4 gap-6 mb-8">
-
-<!-- Hero KPI -->
 <div class="col-span-1 bg-brand-navy rounded-2xl p-6 text-white shadow-lg">
 <div class="text-[10px] uppercase tracking-[0.18em] text-brand-gold">Total Intakes</div>
 <div class="font-serif text-5xl mt-3 font-bold">247</div>
 <div class="text-xs text-white/50 mt-2">+12% from last month</div>
 </div>
-
-<!-- KPI 2 -->
 <div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
 <div class="text-[10px] uppercase tracking-[0.18em] text-brand-charcoal/50">Scheduled Consultations</div>
 <div class="font-serif text-4xl mt-3 text-brand-navy font-bold">142</div>
 <div class="text-xs text-green-600 mt-2">57.5% conversion</div>
 </div>
-
-<!-- KPI 3 -->
 <div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
 <div class="text-[10px] uppercase tracking-[0.18em] text-brand-charcoal/50">Not Scheduled</div>
 <div class="font-serif text-4xl mt-3 text-brand-navy font-bold">105</div>
 <div class="text-xs text-brand-charcoal/40 mt-2">42.5% of total</div>
 </div>
-
-<!-- KPI 4 -->
 <div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
-<div class="text-[10px] uppercase tracking-[0.18em] text-brand-charcoal/50">Avg. Response Time</div>
-<div class="font-serif text-4xl mt-3 text-brand-navy font-bold">1.4<span class="text-xl">d</span></div>
-<div class="text-xs text-green-600 mt-2">-0.3d vs last month</div>
+<div class="text-[10px] uppercase tracking-[0.18em] text-brand-charcoal/50">Top Practice Area</div>
+<div class="font-serif text-2xl mt-3 text-brand-navy font-bold">Personal Injury</div>
+<div class="text-xs text-brand-gold mt-2">72 intakes (29.1%)</div>
 </div>
-
 </div>
 
 <!-- CHARTS ROW 1 -->
 <div class="grid grid-cols-2 gap-6 mb-8">
-
-<!-- Intakes Over Time -->
 <div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
 <h3 class="font-serif text-xl text-brand-navy">Intakes Over Time</h3>
 <p class="text-xs text-brand-charcoal/40 mt-1">Monthly trend, last 6 months</p>
 <div class="h-0.5 w-8 bg-brand-gold mt-3 rounded-full"></div>
 <div class="mt-4" style="height:220px"><canvas id="intakesChart"></canvas></div>
 </div>
-
-<!-- Survey Type Breakdown -->
 <div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
 <h3 class="font-serif text-xl text-brand-navy">Survey Type Breakdown</h3>
 <p class="text-xs text-brand-charcoal/40 mt-1">Distribution by response type</p>
 <div class="h-0.5 w-8 bg-brand-gold mt-3 rounded-full"></div>
 <div class="mt-4" style="height:220px"><canvas id="surveyTypeChart"></canvas></div>
 </div>
-
 </div>
 
 <!-- CHARTS ROW 2 -->
 <div class="grid grid-cols-2 gap-6 mb-8">
-
-<!-- No Schedule Reasons -->
 <div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
 <h3 class="font-serif text-xl text-brand-navy">No-Schedule Reasons</h3>
 <p class="text-xs text-brand-charcoal/40 mt-1">Why clients didn't schedule</p>
 <div class="h-0.5 w-8 bg-brand-gold mt-3 rounded-full"></div>
 <div class="mt-4" style="height:220px"><canvas id="reasonsChart"></canvas></div>
 </div>
-
-<!-- Conversion Rate -->
 <div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
 <h3 class="font-serif text-xl text-brand-navy">Scheduled vs. Not Scheduled</h3>
 <p class="text-xs text-brand-charcoal/40 mt-1">Overall conversion breakdown</p>
 <div class="h-0.5 w-8 bg-brand-gold mt-3 rounded-full"></div>
 <div class="mt-4" style="height:220px"><canvas id="conversionChart"></canvas></div>
 </div>
-
 </div>
 
-<!-- RECENT RESPONSES TABLE -->
+</div><!-- end overview page -->
+
+<!-- PAGE: ALL RESPONSES -->
+<div id="page-responses" class="page flex-1 p-8">
 <div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
-<h3 class="font-serif text-xl text-brand-navy">Recent Survey Responses</h3>
-<p class="text-xs text-brand-charcoal/40 mt-1">Latest intake survey submissions</p>
-<div class="h-0.5 w-8 bg-brand-gold mt-3 rounded-full mb-4"></div>
-<div class="overflow-x-auto">
+<div class="flex items-center justify-between mb-4">
+<div>
+<h3 class="font-serif text-xl text-brand-navy">All Survey Responses</h3>
+<p class="text-xs text-brand-charcoal/40 mt-1">Complete list of intake survey submissions</p>
+<div class="h-0.5 w-8 bg-brand-gold mt-3 rounded-full"></div>
+</div>
+<div class="flex gap-2">
+<input type="text" placeholder="Search by name or email..." class="text-sm px-3 py-1.5 border border-brand-border rounded-lg bg-brand-cream focus:outline-none focus:border-brand-gold">
+<select class="text-sm px-3 py-1.5 border border-brand-border rounded-lg bg-brand-cream">
+<option>All Types</option><option>Personal Injury</option><option>Family Law</option><option>Business Law</option><option>Estate Planning</option><option>DUI/Criminal</option><option>Real Estate</option>
+</select>
+</div>
+</div>
 <table class="w-full text-sm">
-<thead>
-<tr class="border-b border-brand-border">
-<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy text-sm">ID</th>
-<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy text-sm">Name</th>
-<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy text-sm">Email</th>
-<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy text-sm">Survey Type</th>
-<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy text-sm">Scheduled</th>
-<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy text-sm">Date</th>
-</tr>
-</thead>
+<thead><tr class="border-b border-brand-border">
+<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy">ID</th>
+<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy">Name</th>
+<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy">Email</th>
+<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy">Survey Type</th>
+<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy">Scheduled</th>
+<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy">No-Schedule Reason</th>
+<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy">Date</th>
+</tr></thead>
 <tbody>
-<tr class="border-b border-brand-border/50 hover:bg-brand-cream/50 transition">
-<td class="py-3 px-4 text-brand-charcoal/70">247</td>
-<td class="py-3 px-4 font-medium">Sarah Mitchell</td>
-<td class="py-3 px-4 text-brand-charcoal/60">s.mitchell@email.com</td>
-<td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-gold/10 text-brand-gold">Personal Injury</span></td>
-<td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-green-50 text-green-700">Yes</span></td>
-<td class="py-3 px-4 text-brand-charcoal/50">Jun 2, 2026</td>
-</tr>
-<tr class="border-b border-brand-border/50 hover:bg-brand-cream/50 transition">
-<td class="py-3 px-4 text-brand-charcoal/70">246</td>
-<td class="py-3 px-4 font-medium">James Thornton</td>
-<td class="py-3 px-4 text-brand-charcoal/60">j.thornton@email.com</td>
-<td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-navy/10 text-brand-navy">Family Law</span></td>
-<td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-red-50 text-red-600">No</span></td>
-<td class="py-3 px-4 text-brand-charcoal/50">Jun 1, 2026</td>
-</tr>
-<tr class="border-b border-brand-border/50 hover:bg-brand-cream/50 transition">
-<td class="py-3 px-4 text-brand-charcoal/70">245</td>
-<td class="py-3 px-4 font-medium">Maria Chen</td>
-<td class="py-3 px-4 text-brand-charcoal/60">m.chen@email.com</td>
-<td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-gold/10 text-brand-gold">Business Law</span></td>
-<td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-green-50 text-green-700">Yes</span></td>
-<td class="py-3 px-4 text-brand-charcoal/50">May 31, 2026</td>
-</tr>
-<tr class="border-b border-brand-border/50 hover:bg-brand-cream/50 transition">
-<td class="py-3 px-4 text-brand-charcoal/70">244</td>
-<td class="py-3 px-4 font-medium">Robert Davis</td>
-<td class="py-3 px-4 text-brand-charcoal/60">r.davis@email.com</td>
-<td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-navy/10 text-brand-navy">Estate Planning</span></td>
-<td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-green-50 text-green-700">Yes</span></td>
-<td class="py-3 px-4 text-brand-charcoal/50">May 30, 2026</td>
-</tr>
-<tr class="hover:bg-brand-cream/50 transition">
-<td class="py-3 px-4 text-brand-charcoal/70">243</td>
-<td class="py-3 px-4 font-medium">Emily Watson</td>
-<td class="py-3 px-4 text-brand-charcoal/60">e.watson@email.com</td>
-<td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-gold/10 text-brand-gold">DUI/Criminal</span></td>
-<td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-red-50 text-red-600">No</span></td>
-<td class="py-3 px-4 text-brand-charcoal/50">May 29, 2026</td>
-</tr>
-</tbody>
-</table>
+<tr class="border-b border-brand-border/50 hover:bg-brand-cream/50"><td class="py-3 px-4">247</td><td class="py-3 px-4 font-medium">Sarah Mitchell</td><td class="py-3 px-4 text-brand-charcoal/60">s.mitchell@email.com</td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-gold/10 text-brand-gold">Personal Injury</span></td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-green-50 text-green-700">Yes</span></td><td class="py-3 px-4 text-brand-charcoal/40">-</td><td class="py-3 px-4 text-brand-charcoal/50">Jun 2, 2026</td></tr>
+<tr class="border-b border-brand-border/50 hover:bg-brand-cream/50"><td class="py-3 px-4">246</td><td class="py-3 px-4 font-medium">James Thornton</td><td class="py-3 px-4 text-brand-charcoal/60">j.thornton@email.com</td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-navy/10 text-brand-navy">Family Law</span></td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-red-50 text-red-600">No</span></td><td class="py-3 px-4 text-brand-charcoal/60">Cost concerns</td><td class="py-3 px-4 text-brand-charcoal/50">Jun 1, 2026</td></tr>
+<tr class="border-b border-brand-border/50 hover:bg-brand-cream/50"><td class="py-3 px-4">245</td><td class="py-3 px-4 font-medium">Maria Chen</td><td class="py-3 px-4 text-brand-charcoal/60">m.chen@email.com</td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-gold/10 text-brand-gold">Business Law</span></td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-green-50 text-green-700">Yes</span></td><td class="py-3 px-4 text-brand-charcoal/40">-</td><td class="py-3 px-4 text-brand-charcoal/50">May 31, 2026</td></tr>
+<tr class="border-b border-brand-border/50 hover:bg-brand-cream/50"><td class="py-3 px-4">244</td><td class="py-3 px-4 font-medium">Robert Davis</td><td class="py-3 px-4 text-brand-charcoal/60">r.davis@email.com</td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-navy/10 text-brand-navy">Estate Planning</span></td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-green-50 text-green-700">Yes</span></td><td class="py-3 px-4 text-brand-charcoal/40">-</td><td class="py-3 px-4 text-brand-charcoal/50">May 30, 2026</td></tr>
+<tr class="border-b border-brand-border/50 hover:bg-brand-cream/50"><td class="py-3 px-4">243</td><td class="py-3 px-4 font-medium">Emily Watson</td><td class="py-3 px-4 text-brand-charcoal/60">e.watson@email.com</td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-gold/10 text-brand-gold">DUI/Criminal</span></td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-red-50 text-red-600">No</span></td><td class="py-3 px-4 text-brand-charcoal/60">Not ready</td><td class="py-3 px-4 text-brand-charcoal/50">May 29, 2026</td></tr>
+<tr class="border-b border-brand-border/50 hover:bg-brand-cream/50"><td class="py-3 px-4">242</td><td class="py-3 px-4 font-medium">David Park</td><td class="py-3 px-4 text-brand-charcoal/60">d.park@email.com</td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-gold/10 text-brand-gold">Real Estate</span></td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-green-50 text-green-700">Yes</span></td><td class="py-3 px-4 text-brand-charcoal/40">-</td><td class="py-3 px-4 text-brand-charcoal/50">May 28, 2026</td></tr>
+<tr class="border-b border-brand-border/50 hover:bg-brand-cream/50"><td class="py-3 px-4">241</td><td class="py-3 px-4 font-medium">Lisa Johnson</td><td class="py-3 px-4 text-brand-charcoal/60">l.johnson@email.com</td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-navy/10 text-brand-navy">Personal Injury</span></td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-red-50 text-red-600">No</span></td><td class="py-3 px-4 text-brand-charcoal/60">Found other attorney</td><td class="py-3 px-4 text-brand-charcoal/50">May 27, 2026</td></tr>
+<tr class="hover:bg-brand-cream/50"><td class="py-3 px-4">240</td><td class="py-3 px-4 font-medium">Michael Brown</td><td class="py-3 px-4 text-brand-charcoal/60">m.brown@email.com</td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-gold/10 text-brand-gold">Family Law</span></td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-green-50 text-green-700">Yes</span></td><td class="py-3 px-4 text-brand-charcoal/40">-</td><td class="py-3 px-4 text-brand-charcoal/50">May 26, 2026</td></tr>
+</tbody></table>
+<div class="flex items-center justify-between mt-4 pt-4 border-t border-brand-border">
+<span class="text-xs text-brand-charcoal/50">Showing 1-8 of 247 responses</span>
+<div class="flex gap-1">
+<button class="px-3 py-1 text-xs rounded bg-brand-gold text-white">1</button>
+<button class="px-3 py-1 text-xs rounded bg-brand-cream text-brand-charcoal/60 hover:bg-brand-border">2</button>
+<button class="px-3 py-1 text-xs rounded bg-brand-cream text-brand-charcoal/60 hover:bg-brand-border">3</button>
+<button class="px-3 py-1 text-xs rounded bg-brand-cream text-brand-charcoal/60 hover:bg-brand-border">...</button>
+<button class="px-3 py-1 text-xs rounded bg-brand-cream text-brand-charcoal/60 hover:bg-brand-border">31</button>
+</div>
+</div>
 </div>
 </div>
 
-</main>
+<!-- PAGE: SCHEDULED -->
+<div id="page-scheduled" class="page flex-1 p-8">
+<div class="grid grid-cols-3 gap-6 mb-8">
+<div class="bg-brand-navy rounded-2xl p-6 text-white shadow-lg">
+<div class="text-[10px] uppercase tracking-[0.18em] text-brand-gold">Total Scheduled</div>
+<div class="font-serif text-5xl mt-3 font-bold">142</div>
+<div class="text-xs text-white/50 mt-2">Consultations booked</div>
+</div>
+<div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
+<div class="text-[10px] uppercase tracking-[0.18em] text-brand-charcoal/50">This Month</div>
+<div class="font-serif text-4xl mt-3 text-brand-navy font-bold">25</div>
+<div class="text-xs text-green-600 mt-2">+8 from last month</div>
+</div>
+<div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
+<div class="text-[10px] uppercase tracking-[0.18em] text-brand-charcoal/50">Conversion Rate</div>
+<div class="font-serif text-4xl mt-3 text-brand-navy font-bold">57.5%</div>
+<div class="text-xs text-brand-charcoal/40 mt-2">Of all survey responses</div>
+</div>
+</div>
+<div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
+<h3 class="font-serif text-xl text-brand-navy">Scheduled Consultations</h3>
+<p class="text-xs text-brand-charcoal/40 mt-1">Clients who booked a consultation</p>
+<div class="h-0.5 w-8 bg-brand-gold mt-3 rounded-full mb-4"></div>
+<table class="w-full text-sm">
+<thead><tr class="border-b border-brand-border">
+<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy">ID</th>
+<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy">Name</th>
+<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy">Email</th>
+<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy">Survey Type</th>
+<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy">Date</th>
+</tr></thead>
+<tbody>
+<tr class="border-b border-brand-border/50 hover:bg-brand-cream/50"><td class="py-3 px-4">247</td><td class="py-3 px-4 font-medium">Sarah Mitchell</td><td class="py-3 px-4 text-brand-charcoal/60">s.mitchell@email.com</td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-gold/10 text-brand-gold">Personal Injury</span></td><td class="py-3 px-4 text-brand-charcoal/50">Jun 2, 2026</td></tr>
+<tr class="border-b border-brand-border/50 hover:bg-brand-cream/50"><td class="py-3 px-4">245</td><td class="py-3 px-4 font-medium">Maria Chen</td><td class="py-3 px-4 text-brand-charcoal/60">m.chen@email.com</td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-gold/10 text-brand-gold">Business Law</span></td><td class="py-3 px-4 text-brand-charcoal/50">May 31, 2026</td></tr>
+<tr class="border-b border-brand-border/50 hover:bg-brand-cream/50"><td class="py-3 px-4">244</td><td class="py-3 px-4 font-medium">Robert Davis</td><td class="py-3 px-4 text-brand-charcoal/60">r.davis@email.com</td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-navy/10 text-brand-navy">Estate Planning</span></td><td class="py-3 px-4 text-brand-charcoal/50">May 30, 2026</td></tr>
+<tr class="border-b border-brand-border/50 hover:bg-brand-cream/50"><td class="py-3 px-4">242</td><td class="py-3 px-4 font-medium">David Park</td><td class="py-3 px-4 text-brand-charcoal/60">d.park@email.com</td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-gold/10 text-brand-gold">Real Estate</span></td><td class="py-3 px-4 text-brand-charcoal/50">May 28, 2026</td></tr>
+<tr class="hover:bg-brand-cream/50"><td class="py-3 px-4">240</td><td class="py-3 px-4 font-medium">Michael Brown</td><td class="py-3 px-4 text-brand-charcoal/60">m.brown@email.com</td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-gold/10 text-brand-gold">Family Law</span></td><td class="py-3 px-4 text-brand-charcoal/50">May 26, 2026</td></tr>
+</tbody></table>
+</div>
 </div>
 
-<!-- CHART.JS SCRIPTS -->
+<!-- PAGE: REPORTS -->
+<div id="page-reports" class="page flex-1 p-8">
+<div class="grid grid-cols-2 gap-6 mb-8">
+<div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
+<h3 class="font-serif text-xl text-brand-navy">Monthly Intake Summary</h3>
+<p class="text-xs text-brand-charcoal/40 mt-1">Intakes by month with scheduled breakdown</p>
+<div class="h-0.5 w-8 bg-brand-gold mt-3 rounded-full"></div>
+<div class="mt-4" style="height:260px"><canvas id="monthlyReport"></canvas></div>
+</div>
+<div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
+<h3 class="font-serif text-xl text-brand-navy">Practice Area Performance</h3>
+<p class="text-xs text-brand-charcoal/40 mt-1">Conversion rate by practice area</p>
+<div class="h-0.5 w-8 bg-brand-gold mt-3 rounded-full"></div>
+<div class="mt-4" style="height:260px"><canvas id="practiceReport"></canvas></div>
+</div>
+</div>
+<div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
+<h3 class="font-serif text-xl text-brand-navy">Key Metrics Summary</h3>
+<div class="h-0.5 w-8 bg-brand-gold mt-3 rounded-full mb-6"></div>
+<div class="grid grid-cols-4 gap-6">
+<div class="text-center p-4 bg-brand-cream rounded-xl">
+<div class="font-serif text-3xl text-brand-navy font-bold">247</div>
+<div class="text-xs text-brand-charcoal/50 mt-1">Total Intakes</div>
+</div>
+<div class="text-center p-4 bg-brand-cream rounded-xl">
+<div class="font-serif text-3xl text-brand-navy font-bold">57.5%</div>
+<div class="text-xs text-brand-charcoal/50 mt-1">Conversion Rate</div>
+</div>
+<div class="text-center p-4 bg-brand-cream rounded-xl">
+<div class="font-serif text-3xl text-brand-navy font-bold">6</div>
+<div class="text-xs text-brand-charcoal/50 mt-1">Practice Areas</div>
+</div>
+<div class="text-center p-4 bg-brand-cream rounded-xl">
+<div class="font-serif text-3xl text-brand-navy font-bold">30.4%</div>
+<div class="text-xs text-brand-charcoal/50 mt-1">Cost Concern Rate</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- end main content -->
+
+<!-- JAVASCRIPT -->
 <script>
-const GOLD = '#B89968';
-const NAVY = '#0F1419';
-const GOLD2 = '#C9A574';
-const CREAM = '#F5F3EF';
-const BORDER = '#E8E4DC';
-
+const GOLD = '#B89968'; const NAVY = '#0F1419'; const GOLD2 = '#C9A574'; const BORDER = '#E8E4DC';
 Chart.defaults.font.family = 'Inter, system-ui, sans-serif';
 Chart.defaults.font.size = 11;
 Chart.defaults.color = '#2C2C2C80';
 
-// 1. Intakes Over Time (Area)
+const titles = { overview:'Overview', responses:'All Responses', scheduled:'Scheduled Consultations', reports:'Reports' };
+let reportChartsInit = false;
+
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.getElementById('page-title').textContent = titles[page];
+  document.querySelectorAll('.nav-link').forEach(l => { l.classList.remove('nav-active','text-white'); l.classList.add('text-white/60'); });
+  const nav = document.getElementById('nav-'+page);
+  nav.classList.add('nav-active','text-white'); nav.classList.remove('text-white/60');
+  if(page==='reports' && !reportChartsInit) { initReportCharts(); reportChartsInit=true; }
+}
+
+// Overview Charts
 new Chart(document.getElementById('intakesChart'), {
-type: 'line',
-data: {
-labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-datasets: [{
-label: 'Total Intakes',
-data: [28, 35, 42, 38, 52, 52],
-borderColor: GOLD,
-backgroundColor: GOLD + '20',
-fill: true,
-tension: 0.4,
-pointBackgroundColor: GOLD,
-pointRadius: 4,
-pointHoverRadius: 6,
-borderWidth: 2,
-}, {
-label: 'Scheduled',
-data: [15, 20, 28, 22, 32, 25],
-borderColor: NAVY,
-backgroundColor: NAVY + '10',
-fill: true,
-tension: 0.4,
-pointBackgroundColor: NAVY,
-pointRadius: 3,
-pointHoverRadius: 5,
-borderWidth: 2,
-}]
-},
-options: {
-responsive: true, maintainAspectRatio: false,
-plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 16 } } },
-scales: {
-y: { beginAtZero: true, grid: { color: BORDER }, border: { display: false } },
-x: { grid: { display: false }, border: { display: false } }
-}
-}
+  type:'line', data:{ labels:['Jan','Feb','Mar','Apr','May','Jun'],
+  datasets:[{label:'Total Intakes',data:[28,35,42,38,52,52],borderColor:GOLD,backgroundColor:GOLD+'20',fill:true,tension:0.4,pointBackgroundColor:GOLD,pointRadius:4,borderWidth:2},
+  {label:'Scheduled',data:[15,20,28,22,32,25],borderColor:NAVY,backgroundColor:NAVY+'10',fill:true,tension:0.4,pointBackgroundColor:NAVY,pointRadius:3,borderWidth:2}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:16}}},scales:{y:{beginAtZero:true,grid:{color:BORDER},border:{display:false}},x:{grid:{display:false},border:{display:false}}}}
 });
 
-// 2. Survey Type (Donut)
 new Chart(document.getElementById('surveyTypeChart'), {
-type: 'doughnut',
-data: {
-labels: ['Personal Injury', 'Family Law', 'Business Law', 'Estate Planning', 'DUI/Criminal', 'Real Estate'],
-datasets: [{
-data: [72, 48, 38, 35, 30, 24],
-backgroundColor: [GOLD, NAVY, GOLD2, '#8B7355', '#D4C5A9', '#4A4A4A'],
-borderWidth: 0,
-hoverOffset: 8,
-}]
-},
-options: {
-responsive: true, maintainAspectRatio: false,
-cutout: '65%',
-plugins: { legend: { position: 'right', labels: { usePointStyle: true, padding: 12, font: { size: 11 } } } }
-}
+  type:'doughnut', data:{ labels:['Personal Injury','Family Law','Business Law','Estate Planning','DUI/Criminal','Real Estate'],
+  datasets:[{data:[72,48,38,35,30,24],backgroundColor:[GOLD,NAVY,GOLD2,'#8B7355','#D4C5A9','#4A4A4A'],borderWidth:0,hoverOffset:8}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{position:'right',labels:{usePointStyle:true,padding:12,font:{size:11}}}}}
 });
 
-// 3. No-Schedule Reasons (Horizontal Bar)
 new Chart(document.getElementById('reasonsChart'), {
-type: 'bar',
-data: {
-labels: ['Cost concerns', 'Not ready', 'Found other attorney', 'No response', 'Resolved independently', 'Other'],
-datasets: [{
-label: 'Count',
-data: [32, 25, 18, 15, 10, 5],
-backgroundColor: GOLD,
-borderRadius: 6,
-barThickness: 18,
-}]
-},
-options: {
-responsive: true, maintainAspectRatio: false,
-indexAxis: 'y',
-plugins: { legend: { display: false } },
-scales: {
-x: { beginAtZero: true, grid: { color: BORDER }, border: { display: false } },
-y: { grid: { display: false }, border: { display: false } }
-}
-}
+  type:'bar', data:{ labels:['Cost concerns','Not ready','Found other attorney','No response','Resolved independently','Other'],
+  datasets:[{label:'Count',data:[32,25,18,15,10,5],backgroundColor:GOLD,borderRadius:6,barThickness:18}]},
+  options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,grid:{color:BORDER},border:{display:false}},y:{grid:{display:false},border:{display:false}}}}
 });
 
-// 4. Conversion (Donut)
 new Chart(document.getElementById('conversionChart'), {
-type: 'doughnut',
-data: {
-labels: ['Scheduled', 'Not Scheduled'],
-datasets: [{
-data: [142, 105],
-backgroundColor: [GOLD, NAVY],
-borderWidth: 0,
-hoverOffset: 8,
-}]
-},
-options: {
-responsive: true, maintainAspectRatio: false,
-cutout: '70%',
-plugins: {
-legend: { position: 'bottom', labels: { usePointStyle: true, padding: 16 } },
-}
-}
+  type:'doughnut', data:{ labels:['Scheduled','Not Scheduled'],
+  datasets:[{data:[142,105],backgroundColor:[GOLD,NAVY],borderWidth:0,hoverOffset:8}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'70%',plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:16}}}}
 });
-</script>
 
+function initReportCharts() {
+  new Chart(document.getElementById('monthlyReport'), {
+    type:'bar', data:{ labels:['Jan','Feb','Mar','Apr','May','Jun'],
+    datasets:[{label:'Scheduled',data:[15,20,28,22,32,25],backgroundColor:GOLD,borderRadius:6},{label:'Not Scheduled',data:[13,15,14,16,20,27],backgroundColor:NAVY,borderRadius:6}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:16}}},scales:{y:{beginAtZero:true,grid:{color:BORDER},border:{display:false},stacked:true},x:{grid:{display:false},border:{display:false},stacked:true}}}
+  });
+  new Chart(document.getElementById('practiceReport'), {
+    type:'bar', data:{ labels:['Personal Injury','Family Law','Business','Estate Plan.','DUI/Criminal','Real Estate'],
+    datasets:[{label:'Conversion %',data:[65,52,68,71,43,58],backgroundColor:GOLD,borderRadius:6,barThickness:24}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,max:100,grid:{color:BORDER},border:{display:false},ticks:{callback:v=>v+'%'}},x:{grid:{display:false},border:{display:false}}}}
+  });
+}
+</script>
 </body>
 </html>
