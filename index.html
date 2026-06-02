@@ -1,332 +1,127 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BRE Law - Client Intake Dashboard</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4/dist/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script>
-tailwind.config = {
-  theme: {
-    extend: {
-      colors: {
-        'brand-navy': '#0F1419',
-        'brand-navy-2': '#1A1F2B',
-        'brand-gold': '#B89968',
-        'brand-gold-2': '#C9A574',
-        'brand-cream': '#F5F3EF',
-        'brand-paper': '#FFFFFF',
-        'brand-charcoal': '#2C2C2C',
-        'brand-border': '#E8E4DC',
-      },
-      fontFamily: {
-        serif: ['Cormorant Garamond', 'Georgia', 'serif'],
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-      },
-    },
-  },
-}
-</script>
-<style>
-html, body { font-family: 'Inter', system-ui, sans-serif; }
-h1,h2,h3,h4 { font-family: 'Cormorant Garamond', Georgia, serif; letter-spacing: -0.01em; }
-.nav-active { background: rgba(255,255,255,0.1); border-left: 2px solid #B89968; }
-.page { display: none; }
-.page.active { display: block; }
-</style>
-</head>
-<body class="bg-brand-cream text-brand-charcoal min-h-screen flex">
-
-<!-- SIDEBAR -->
+<script>tailwind.config={theme:{extend:{colors:{'brand-navy':'#0F1419','brand-navy-2':'#1A1F2B','brand-gold':'#B89968','brand-gold-2':'#C9A574','brand-cream':'#F5F3EF','brand-paper':'#FFFFFF','brand-charcoal':'#2C2C2C','brand-border':'#E8E4DC'},fontFamily:{serif:['Cormorant Garamond','Georgia','serif'],sans:['Inter','system-ui','sans-serif']}}}}</script>
+<style>html,body{font-family:'Inter',system-ui,sans-serif}h1,h2,h3,h4{font-family:'Cormorant Garamond',Georgia,serif;letter-spacing:-0.01em}.nav-active{background:rgba(255,255,255,0.1);border-left:2px solid #B89968}.page{display:none}.page.active{display:block}</style>
+</head><body class="bg-brand-cream text-brand-charcoal min-h-screen flex">
 <aside class="w-60 bg-brand-navy text-white flex flex-col fixed h-screen">
-<div class="px-6 py-5 border-b border-white/10">
-<img src="https://brelaw.com/wp-content/uploads/2024/06/footer-logo.png" alt="BRE Law" class="w-36 opacity-90">
-</div>
+<div class="px-6 py-5 border-b border-white/10"><img src="https://brelaw.com/wp-content/uploads/2024/06/footer-logo.png" alt="BRE Law" class="w-36 opacity-90"></div>
 <nav class="flex-1 px-3 py-6 space-y-1">
-<a href="#" onclick="showPage('overview')" id="nav-overview" class="nav-link nav-active flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white">
-<svg class="w-4 h-4 text-brand-gold" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-Overview</a>
-<a href="#" onclick="showPage('responses')" id="nav-responses" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/60 hover:text-white hover:bg-white/5 transition">
-<svg class="w-4 h-4 text-brand-gold/50" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-All Responses</a>
-<a href="#" onclick="showPage('scheduled')" id="nav-scheduled" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/60 hover:text-white hover:bg-white/5 transition">
-<svg class="w-4 h-4 text-brand-gold/50" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-Scheduled</a>
-<a href="#" onclick="showPage('reports')" id="nav-reports" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/60 hover:text-white hover:bg-white/5 transition">
-<svg class="w-4 h-4 text-brand-gold/50" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-Reports</a>
+<a href="#" onclick="showPage('overview')" id="nav-overview" class="nav-link nav-active flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white"><svg class="w-4 h-4 text-brand-gold" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Overview</a>
+<a href="#" onclick="showPage('ratings')" id="nav-ratings" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/60 hover:text-white hover:bg-white/5 transition"><svg class="w-4 h-4 text-brand-gold/50" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 3l2.5 5 5.5.8-4 3.9.9 5.5L11 15.7 6.1 18.2 7 12.7 3 8.8l5.5-.8L11 3z"/></svg>Ratings</a>
+<a href="#" onclick="showPage('notsigned')" id="nav-notsigned" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/60 hover:text-white hover:bg-white/5 transition"><svg class="w-4 h-4 text-brand-gold/50" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg>Not Signed</a>
+<a href="#" onclick="showPage('responses')" id="nav-responses" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/60 hover:text-white hover:bg-white/5 transition"><svg class="w-4 h-4 text-brand-gold/50" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Responses</a>
 </nav>
 <div class="px-6 py-4 border-t border-white/10 text-[10px] text-white/30">&copy; 2026 BRE Law</div>
 </aside>
-
-<!-- MAIN CONTENT -->
-<div class="flex-1 ml-60 flex flex-col">
-
-<!-- HEADER -->
-<header class="h-16 bg-brand-paper border-b border-brand-border flex items-center justify-between px-8 sticky top-0 z-10">
-<div>
-<h1 class="font-serif text-xl text-brand-navy leading-none" id="page-title">Overview</h1>
-<div class="h-0.5 w-10 bg-brand-gold mt-2 rounded-full"></div>
-</div>
-<div class="flex items-center gap-4">
-<span class="text-xs text-brand-charcoal/50">Last synced: 2 min ago</span>
-<div class="w-8 h-8 rounded-full bg-brand-gold flex items-center justify-center text-white text-xs font-semibold">NE</div>
-</div>
+<main class="flex-1 ml-60">
+<header class="bg-brand-paper border-b border-brand-border px-10 py-5 flex items-center justify-between">
+<div><h1 id="page-title" class="text-2xl text-brand-navy font-semibold">Overview</h1><p class="text-xs text-brand-charcoal/50 mt-0.5">Last synced: 2 min ago</p></div>
+<div class="flex items-center gap-3"><div class="text-right"><div class="text-sm font-medium">BRE Law</div><div class="text-[11px] text-brand-charcoal/50">Intake Team</div></div><div class="w-9 h-9 rounded-full bg-brand-gold text-white flex items-center justify-center text-xs font-semibold">NE</div></div>
 </header>
 
-<!-- PAGE: OVERVIEW -->
-<div id="page-overview" class="page active flex-1 p-8">
+<section id="page-overview" class="page active px-10 py-8">
+<div class="mb-6"><h2 class="text-xl text-brand-navy font-semibold">Brooke — Intake Specialist Snapshot</h2><p class="text-xs text-brand-charcoal/50">Performance summary across all surveys</p></div>
+<div class="grid grid-cols-4 gap-5 mb-8">
+<div class="bg-brand-paper border border-brand-border rounded-xl p-5"><div class="text-[11px] uppercase tracking-wider text-brand-charcoal/50 mb-2">Avg Friendliness</div><div class="text-3xl font-semibold text-brand-navy">4.8<span class="text-base text-brand-charcoal/40"> / 5</span></div><div class="text-[11px] text-brand-gold mt-1">★★★★★</div></div>
+<div class="bg-brand-paper border border-brand-border rounded-xl p-5"><div class="text-[11px] uppercase tracking-wider text-brand-charcoal/50 mb-2">Avg Overall</div><div class="text-3xl font-semibold text-brand-navy">4.6<span class="text-base text-brand-charcoal/40"> / 5</span></div><div class="text-[11px] text-brand-gold mt-1">★★★★☆</div></div>
+<div class="bg-brand-paper border border-brand-border rounded-xl p-5"><div class="text-[11px] uppercase tracking-wider text-brand-charcoal/50 mb-2">Total Surveys</div><div class="text-3xl font-semibold text-brand-navy">247</div><div class="text-[11px] text-brand-charcoal/60 mt-1">All-time responses</div></div>
+<div class="bg-brand-paper border border-brand-border rounded-xl p-5"><div class="text-[11px] uppercase tracking-wider text-brand-charcoal/50 mb-2">Low-Score Count</div><div class="text-3xl font-semibold text-brand-navy">11</div><div class="text-[11px] text-brand-charcoal/60 mt-1">Ratings of 1 or 2 (needs review)</div></div>
+</div>
+<div class="grid grid-cols-2 gap-5">
+<div class="bg-brand-paper border border-brand-border rounded-xl p-6"><h3 class="text-lg text-brand-navy font-semibold mb-1">Survey Volume Over Time</h3><p class="text-xs text-brand-charcoal/50 mb-4">Last 6 months</p><div class="h-64"><canvas id="overviewVolume"></canvas></div></div>
+<div class="bg-brand-paper border border-brand-border rounded-xl p-6"><h3 class="text-lg text-brand-navy font-semibold mb-1">Rating Mix (Avg)</h3><p class="text-xs text-brand-charcoal/50 mb-4">Across the five rated questions</p><div class="h-64"><canvas id="overviewMix"></canvas></div></div>
+</div>
+</section>
 
-<!-- KPI ROW -->
-<div class="grid grid-cols-4 gap-6 mb-8">
-<div class="col-span-1 bg-brand-navy rounded-2xl p-6 text-white shadow-lg">
-<div class="text-[10px] uppercase tracking-[0.18em] text-brand-gold">Total Intakes</div>
-<div class="font-serif text-5xl mt-3 font-bold">247</div>
-<div class="text-xs text-white/50 mt-2">+12% from last month</div>
-</div>
-<div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
-<div class="text-[10px] uppercase tracking-[0.18em] text-brand-charcoal/50">Scheduled Consultations</div>
-<div class="font-serif text-4xl mt-3 text-brand-navy font-bold">142</div>
-<div class="text-xs text-green-600 mt-2">57.5% conversion</div>
-</div>
-<div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
-<div class="text-[10px] uppercase tracking-[0.18em] text-brand-charcoal/50">Not Scheduled</div>
-<div class="font-serif text-4xl mt-3 text-brand-navy font-bold">105</div>
-<div class="text-xs text-brand-charcoal/40 mt-2">42.5% of total</div>
-</div>
-<div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
-<div class="text-[10px] uppercase tracking-[0.18em] text-brand-charcoal/50">Top Practice Area</div>
-<div class="font-serif text-2xl mt-3 text-brand-navy font-bold">Personal Injury</div>
-<div class="text-xs text-brand-gold mt-2">72 intakes (29.1%)</div>
-</div>
-</div>
 
-<!-- CHARTS ROW 1 -->
-<div class="grid grid-cols-2 gap-6 mb-8">
-<div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
-<h3 class="font-serif text-xl text-brand-navy">Intakes Over Time</h3>
-<p class="text-xs text-brand-charcoal/40 mt-1">Monthly trend, last 6 months</p>
-<div class="h-0.5 w-8 bg-brand-gold mt-3 rounded-full"></div>
-<div class="mt-4" style="height:220px"><canvas id="intakesChart"></canvas></div>
+<section id="page-ratings" class="page px-10 py-8">
+<div class="grid grid-cols-5 gap-5 mb-8">
+<div class="bg-brand-paper border border-brand-border rounded-xl p-5"><div class="text-[11px] uppercase tracking-wider text-brand-charcoal/50 mb-2">Friendliness</div><div class="text-3xl font-semibold text-brand-navy">4.8<span class="text-base text-brand-charcoal/40"> / 5</span></div></div>
+<div class="bg-brand-paper border border-brand-border rounded-xl p-5"><div class="text-[11px] uppercase tracking-wider text-brand-charcoal/50 mb-2">Overall Experience</div><div class="text-3xl font-semibold text-brand-navy">4.6<span class="text-base text-brand-charcoal/40"> / 5</span></div></div>
+<div class="bg-brand-paper border border-brand-border rounded-xl p-5"><div class="text-[11px] uppercase tracking-wider text-brand-charcoal/50 mb-2">Consultation Exp.</div><div class="text-3xl font-semibold text-brand-navy">4.5<span class="text-base text-brand-charcoal/40"> / 5</span></div></div>
+<div class="bg-brand-paper border border-brand-border rounded-xl p-5"><div class="text-[11px] uppercase tracking-wider text-brand-charcoal/50 mb-2">Responsiveness</div><div class="text-3xl font-semibold text-brand-navy">4.7<span class="text-base text-brand-charcoal/40"> / 5</span></div></div>
+<div class="bg-brand-paper border border-brand-border rounded-xl p-5"><div class="text-[11px] uppercase tracking-wider text-brand-charcoal/50 mb-2">Knowledge</div><div class="text-3xl font-semibold text-brand-navy">4.5<span class="text-base text-brand-charcoal/40"> / 5</span></div></div>
 </div>
-<div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
-<h3 class="font-serif text-xl text-brand-navy">Survey Type Breakdown</h3>
-<p class="text-xs text-brand-charcoal/40 mt-1">Distribution by response type</p>
-<div class="h-0.5 w-8 bg-brand-gold mt-3 rounded-full"></div>
-<div class="mt-4" style="height:220px"><canvas id="surveyTypeChart"></canvas></div>
+<div class="grid grid-cols-2 gap-5 mb-8">
+<div class="bg-brand-paper border border-brand-border rounded-xl p-6"><h3 class="text-lg text-brand-navy font-semibold mb-1">Rating Trends Over Time</h3><p class="text-xs text-brand-charcoal/50 mb-4">Monthly averages, last 6 months</p><div class="h-72"><canvas id="ratingTrends"></canvas></div></div>
+<div class="bg-brand-paper border border-brand-border rounded-xl p-6"><h3 class="text-lg text-brand-navy font-semibold mb-1">Rating Distribution</h3><p class="text-xs text-brand-charcoal/50 mb-4">Count of each score (1–5) across all categories</p><div class="h-72"><canvas id="ratingDist"></canvas></div></div>
 </div>
-</div>
+</section>
 
-<!-- CHARTS ROW 2 -->
-<div class="grid grid-cols-2 gap-6 mb-8">
-<div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
-<h3 class="font-serif text-xl text-brand-navy">No-Schedule Reasons</h3>
-<p class="text-xs text-brand-charcoal/40 mt-1">Why clients didn't schedule</p>
-<div class="h-0.5 w-8 bg-brand-gold mt-3 rounded-full"></div>
-<div class="mt-4" style="height:220px"><canvas id="reasonsChart"></canvas></div>
+<section id="page-notsigned" class="page px-10 py-8">
+<div class="grid grid-cols-3 gap-5 mb-8">
+<div class="bg-brand-paper border border-brand-border rounded-xl p-5"><div class="text-[11px] uppercase tracking-wider text-brand-charcoal/50 mb-2">Total Not Signed</div><div class="text-3xl font-semibold text-brand-navy">105</div><div class="text-[11px] text-brand-charcoal/60 mt-1">42.5% of all surveys</div></div>
+<div class="bg-brand-paper border border-brand-border rounded-xl p-5"><div class="text-[11px] uppercase tracking-wider text-brand-charcoal/50 mb-2">#1 Reason</div><div class="text-xl font-semibold text-brand-navy">Cost / fees too high</div><div class="text-[11px] text-brand-charcoal/60 mt-1">35 responses (33.3%)</div></div>
+<div class="bg-brand-paper border border-brand-border rounded-xl p-5"><div class="text-[11px] uppercase tracking-wider text-brand-charcoal/50 mb-2">"Other" Responses</div><div class="text-3xl font-semibold text-brand-navy">8</div><div class="text-[11px] text-brand-charcoal/60 mt-1">Custom explanations provided</div></div>
 </div>
-<div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
-<h3 class="font-serif text-xl text-brand-navy">Scheduled vs. Not Scheduled</h3>
-<p class="text-xs text-brand-charcoal/40 mt-1">Overall conversion breakdown</p>
-<div class="h-0.5 w-8 bg-brand-gold mt-3 rounded-full"></div>
-<div class="mt-4" style="height:220px"><canvas id="conversionChart"></canvas></div>
+<div class="grid grid-cols-2 gap-5 mb-8">
+<div class="bg-brand-paper border border-brand-border rounded-xl p-6"><h3 class="text-lg text-brand-navy font-semibold mb-1">No-Schedule Reasons</h3><p class="text-xs text-brand-charcoal/50 mb-4">Why clients didn't schedule a consultation</p><div class="h-64"><canvas id="reasonsChart"></canvas></div></div>
+<div class="bg-brand-paper border border-brand-border rounded-xl p-6"><h3 class="text-lg text-brand-navy font-semibold mb-1">Reasons Over Time</h3><p class="text-xs text-brand-charcoal/50 mb-4">Monthly breakdown by reason</p><div class="h-64"><canvas id="reasonsTrend"></canvas></div></div>
 </div>
+<div class="grid grid-cols-2 gap-5">
+<div class="bg-brand-paper border border-brand-border rounded-xl p-6"><h3 class="text-lg text-brand-navy font-semibold mb-1">"Other" Explanations</h3><p class="text-xs text-brand-charcoal/50 mb-3">Free-text responses from those who chose "Other"</p>
+<div class="space-y-3">
+<div class="bg-brand-cream rounded-lg p-3 text-sm"><div class="font-medium text-brand-navy">Emily Watson <span class="text-[11px] text-brand-charcoal/40 ml-2">May 29, 2026</span></div><div class="text-brand-charcoal/70 mt-1">"Was referred elsewhere by a friend after my initial call."</div></div>
+<div class="bg-brand-cream rounded-lg p-3 text-sm"><div class="font-medium text-brand-navy">Tom Richards <span class="text-[11px] text-brand-charcoal/40 ml-2">May 20, 2026</span></div><div class="text-brand-charcoal/70 mt-1">"Issue resolved before consultation date."</div></div>
+<div class="bg-brand-cream rounded-lg p-3 text-sm"><div class="font-medium text-brand-navy">Angela Morris <span class="text-[11px] text-brand-charcoal/40 ml-2">May 14, 2026</span></div><div class="text-brand-charcoal/70 mt-1">"Couldn't get time off work for appointment."</div></div>
+<div class="bg-brand-cream rounded-lg p-3 text-sm"><div class="font-medium text-brand-navy">Chris Lane <span class="text-[11px] text-brand-charcoal/40 ml-2">May 8, 2026</span></div><div class="text-brand-charcoal/70 mt-1">"Just exploring options — not ready to commit yet."</div></div>
+</div></div>
+<div class="bg-brand-paper border border-brand-border rounded-xl p-6"><h3 class="text-lg text-brand-navy font-semibold mb-1">Additional Feedback</h3><p class="text-xs text-brand-charcoal/50 mb-3">Comments from the "Any additional feedback?" field</p>
+<div class="space-y-3">
+<div class="bg-brand-cream rounded-lg p-3 text-sm"><div class="font-medium text-brand-navy">James Thornton <span class="text-[11px] text-brand-charcoal/40 ml-2">Jun 1, 2026</span></div><div class="text-brand-charcoal/70 mt-1">"Brooke was very kind and helpful even though I decided not to move forward."</div></div>
+<div class="bg-brand-cream rounded-lg p-3 text-sm"><div class="font-medium text-brand-navy">Lisa Johnson <span class="text-[11px] text-brand-charcoal/40 ml-2">May 27, 2026</span></div><div class="text-brand-charcoal/70 mt-1">"Everything was professional. I just found someone closer to home."</div></div>
+<div class="bg-brand-cream rounded-lg p-3 text-sm"><div class="font-medium text-brand-navy">Sarah Mitchell <span class="text-[11px] text-brand-charcoal/40 ml-2">Jun 2, 2026</span></div><div class="text-brand-charcoal/70 mt-1">"Outstanding experience from start to finish!"</div></div>
+<div class="bg-brand-cream rounded-lg p-3 text-sm"><div class="font-medium text-brand-navy">Maria Chen <span class="text-[11px] text-brand-charcoal/40 ml-2">May 31, 2026</span></div><div class="text-brand-charcoal/70 mt-1">"Quick response and very knowledgeable."</div></div>
+</div></div>
 </div>
+</section>
 
-</div><!-- end overview page -->
+<section id="page-responses" class="page px-10 py-8">
+<div class="bg-brand-paper border border-brand-border rounded-xl p-6">
+<div class="flex items-center justify-between mb-5">
+<div><h3 class="text-lg text-brand-navy font-semibold">Individual Survey Responses</h3><p class="text-xs text-brand-charcoal/50">All records with scores and comments</p></div>
+<div class="flex gap-2"><input type="text" placeholder="Search by name..." class="text-sm px-3 py-1.5 border border-brand-border rounded-lg bg-brand-cream focus:outline-none focus:border-brand-gold"><select class="text-sm px-3 py-1.5 border border-brand-border rounded-lg bg-brand-cream"><option>All Types</option><option>Scheduled</option><option>Not Scheduled</option></select></div>
+</div>
+<div class="overflow-x-auto"><table class="w-full text-sm">
+<thead><tr class="border-b border-brand-border text-[11px] uppercase tracking-wider text-brand-charcoal/50"><th class="text-left py-3 px-2">Name</th><th class="text-left py-3 px-2">Type</th><th class="text-left py-3 px-2">Channel</th><th class="text-center py-3 px-2">Overall</th><th class="text-center py-3 px-2">Friendly</th><th class="text-center py-3 px-2">Responsive</th><th class="text-center py-3 px-2">Knowledge</th><th class="text-center py-3 px-2">Consult</th><th class="text-left py-3 px-2">Hired</th><th class="text-left py-3 px-2">No-Schedule Reason</th><th class="text-left py-3 px-2">Feedback</th><th class="text-left py-3 px-2">Date</th></tr></thead>
+<tbody class="divide-y divide-brand-border">
+<tr><td class="py-3 px-2 font-medium">Sarah Mitchell</td><td class="py-3 px-2"><span class="text-[11px] px-2 py-0.5 rounded bg-brand-gold/15 text-brand-gold">Scheduled</span></td><td class="py-3 px-2">Phone</td><td class="py-3 px-2 text-center">5</td><td class="py-3 px-2 text-center">5</td><td class="py-3 px-2 text-center">5</td><td class="py-3 px-2 text-center">5</td><td class="py-3 px-2 text-center">5</td><td class="py-3 px-2">Yes</td><td class="py-3 px-2 text-brand-charcoal/40">—</td><td class="py-3 px-2 text-xs text-brand-charcoal/70">Outstanding experience!</td><td class="py-3 px-2 text-brand-charcoal/60">Jun 2</td></tr>
+<tr><td class="py-3 px-2 font-medium">James Thornton</td><td class="py-3 px-2"><span class="text-[11px] px-2 py-0.5 rounded bg-brand-navy/10 text-brand-navy">Not Sched.</span></td><td class="py-3 px-2">Website</td><td class="py-3 px-2 text-center">4</td><td class="py-3 px-2 text-center">5</td><td class="py-3 px-2 text-center">4</td><td class="py-3 px-2 text-center">4</td><td class="py-3 px-2 text-center text-brand-charcoal/40">—</td><td class="py-3 px-2">—</td><td class="py-3 px-2 text-xs">Cost / fees too high</td><td class="py-3 px-2 text-xs text-brand-charcoal/70">Brooke was very kind.</td><td class="py-3 px-2 text-brand-charcoal/60">Jun 1</td></tr>
+<tr><td class="py-3 px-2 font-medium">Maria Chen</td><td class="py-3 px-2"><span class="text-[11px] px-2 py-0.5 rounded bg-brand-gold/15 text-brand-gold">Scheduled</span></td><td class="py-3 px-2">Phone</td><td class="py-3 px-2 text-center">5</td><td class="py-3 px-2 text-center">5</td><td class="py-3 px-2 text-center">5</td><td class="py-3 px-2 text-center">5</td><td class="py-3 px-2 text-center">5</td><td class="py-3 px-2">Yes</td><td class="py-3 px-2 text-brand-charcoal/40">—</td><td class="py-3 px-2 text-xs text-brand-charcoal/70">Quick and knowledgeable.</td><td class="py-3 px-2 text-brand-charcoal/60">May 31</td></tr>
+<tr><td class="py-3 px-2 font-medium">Robert Davis</td><td class="py-3 px-2"><span class="text-[11px] px-2 py-0.5 rounded bg-brand-gold/15 text-brand-gold">Scheduled</span></td><td class="py-3 px-2">Website</td><td class="py-3 px-2 text-center">5</td><td class="py-3 px-2 text-center">5</td><td class="py-3 px-2 text-center">4</td><td class="py-3 px-2 text-center">4</td><td class="py-3 px-2 text-center">4</td><td class="py-3 px-2">No</td><td class="py-3 px-2 text-brand-charcoal/40">—</td><td class="py-3 px-2 text-xs text-brand-charcoal/70">—</td><td class="py-3 px-2 text-brand-charcoal/60">May 30</td></tr>
+<tr><td class="py-3 px-2 font-medium">Emily Watson</td><td class="py-3 px-2"><span class="text-[11px] px-2 py-0.5 rounded bg-brand-navy/10 text-brand-navy">Not Sched.</span></td><td class="py-3 px-2">Phone</td><td class="py-3 px-2 text-center">3</td><td class="py-3 px-2 text-center">4</td><td class="py-3 px-2 text-center">3</td><td class="py-3 px-2 text-center">3</td><td class="py-3 px-2 text-center text-brand-charcoal/40">—</td><td class="py-3 px-2">—</td><td class="py-3 px-2 text-xs">Other</td><td class="py-3 px-2 text-xs text-brand-charcoal/70">Referred elsewhere.</td><td class="py-3 px-2 text-brand-charcoal/60">May 29</td></tr>
+<tr><td class="py-3 px-2 font-medium">David Park</td><td class="py-3 px-2"><span class="text-[11px] px-2 py-0.5 rounded bg-brand-gold/15 text-brand-gold">Scheduled</span></td><td class="py-3 px-2">Phone</td><td class="py-3 px-2 text-center">4</td><td class="py-3 px-2 text-center">5</td><td class="py-3 px-2 text-center">4</td><td class="py-3 px-2 text-center">4</td><td class="py-3 px-2 text-center">4</td><td class="py-3 px-2">Yes</td><td class="py-3 px-2 text-brand-charcoal/40">—</td><td class="py-3 px-2 text-xs text-brand-charcoal/70">—</td><td class="py-3 px-2 text-brand-charcoal/60">May 28</td></tr>
+<tr><td class="py-3 px-2 font-medium">Lisa Johnson</td><td class="py-3 px-2"><span class="text-[11px] px-2 py-0.5 rounded bg-brand-navy/10 text-brand-navy">Not Sched.</span></td><td class="py-3 px-2">Website</td><td class="py-3 px-2 text-center">4</td><td class="py-3 px-2 text-center">4</td><td class="py-3 px-2 text-center">4</td><td class="py-3 px-2 text-center">3</td><td class="py-3 px-2 text-center text-brand-charcoal/40">—</td><td class="py-3 px-2">—</td><td class="py-3 px-2 text-xs">Different firm</td><td class="py-3 px-2 text-xs text-brand-charcoal/70">Found someone closer.</td><td class="py-3 px-2 text-brand-charcoal/60">May 27</td></tr>
+<tr><td class="py-3 px-2 font-medium">Michael Brown</td><td class="py-3 px-2"><span class="text-[11px] px-2 py-0.5 rounded bg-brand-gold/15 text-brand-gold">Scheduled</span></td><td class="py-3 px-2">Phone</td><td class="py-3 px-2 text-center">5</td><td class="py-3 px-2 text-center">5</td><td class="py-3 px-2 text-center">5</td><td class="py-3 px-2 text-center">5</td><td class="py-3 px-2 text-center">5</td><td class="py-3 px-2">Yes</td><td class="py-3 px-2 text-brand-charcoal/40">—</td><td class="py-3 px-2 text-xs text-brand-charcoal/70">—</td><td class="py-3 px-2 text-brand-charcoal/60">May 26</td></tr>
+</tbody></table></div>
+<div class="flex justify-between items-center mt-5 text-xs text-brand-charcoal/60"><span>Showing 1-8 of 247 responses</span><div class="flex gap-1"><button class="px-2.5 py-1 border border-brand-border rounded bg-brand-gold text-white">1</button><button class="px-2.5 py-1 border border-brand-border rounded hover:bg-brand-cream">2</button><button class="px-2.5 py-1 border border-brand-border rounded hover:bg-brand-cream">3</button><span class="px-1">...</span><button class="px-2.5 py-1 border border-brand-border rounded hover:bg-brand-cream">31</button></div></div>
+</div>
+</section>
 
-<!-- PAGE: ALL RESPONSES -->
-<div id="page-responses" class="page flex-1 p-8">
-<div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
-<div class="flex items-center justify-between mb-4">
-<div>
-<h3 class="font-serif text-xl text-brand-navy">All Survey Responses</h3>
-<p class="text-xs text-brand-charcoal/40 mt-1">Complete list of intake survey submissions</p>
-<div class="h-0.5 w-8 bg-brand-gold mt-3 rounded-full"></div>
-</div>
-<div class="flex gap-2">
-<input type="text" placeholder="Search by name or email..." class="text-sm px-3 py-1.5 border border-brand-border rounded-lg bg-brand-cream focus:outline-none focus:border-brand-gold">
-<select class="text-sm px-3 py-1.5 border border-brand-border rounded-lg bg-brand-cream">
-<option>All Types</option><option>Personal Injury</option><option>Family Law</option><option>Business Law</option><option>Estate Planning</option><option>DUI/Criminal</option><option>Real Estate</option>
-</select>
-</div>
-</div>
-<table class="w-full text-sm">
-<thead><tr class="border-b border-brand-border">
-<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy">ID</th>
-<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy">Name</th>
-<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy">Email</th>
-<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy">Survey Type</th>
-<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy">Scheduled</th>
-<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy">No-Schedule Reason</th>
-<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy">Date</th>
-</tr></thead>
-<tbody>
-<tr class="border-b border-brand-border/50 hover:bg-brand-cream/50"><td class="py-3 px-4">247</td><td class="py-3 px-4 font-medium">Sarah Mitchell</td><td class="py-3 px-4 text-brand-charcoal/60">s.mitchell@email.com</td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-gold/10 text-brand-gold">Personal Injury</span></td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-green-50 text-green-700">Yes</span></td><td class="py-3 px-4 text-brand-charcoal/40">-</td><td class="py-3 px-4 text-brand-charcoal/50">Jun 2, 2026</td></tr>
-<tr class="border-b border-brand-border/50 hover:bg-brand-cream/50"><td class="py-3 px-4">246</td><td class="py-3 px-4 font-medium">James Thornton</td><td class="py-3 px-4 text-brand-charcoal/60">j.thornton@email.com</td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-navy/10 text-brand-navy">Family Law</span></td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-red-50 text-red-600">No</span></td><td class="py-3 px-4 text-brand-charcoal/60">Cost concerns</td><td class="py-3 px-4 text-brand-charcoal/50">Jun 1, 2026</td></tr>
-<tr class="border-b border-brand-border/50 hover:bg-brand-cream/50"><td class="py-3 px-4">245</td><td class="py-3 px-4 font-medium">Maria Chen</td><td class="py-3 px-4 text-brand-charcoal/60">m.chen@email.com</td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-gold/10 text-brand-gold">Business Law</span></td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-green-50 text-green-700">Yes</span></td><td class="py-3 px-4 text-brand-charcoal/40">-</td><td class="py-3 px-4 text-brand-charcoal/50">May 31, 2026</td></tr>
-<tr class="border-b border-brand-border/50 hover:bg-brand-cream/50"><td class="py-3 px-4">244</td><td class="py-3 px-4 font-medium">Robert Davis</td><td class="py-3 px-4 text-brand-charcoal/60">r.davis@email.com</td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-navy/10 text-brand-navy">Estate Planning</span></td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-green-50 text-green-700">Yes</span></td><td class="py-3 px-4 text-brand-charcoal/40">-</td><td class="py-3 px-4 text-brand-charcoal/50">May 30, 2026</td></tr>
-<tr class="border-b border-brand-border/50 hover:bg-brand-cream/50"><td class="py-3 px-4">243</td><td class="py-3 px-4 font-medium">Emily Watson</td><td class="py-3 px-4 text-brand-charcoal/60">e.watson@email.com</td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-gold/10 text-brand-gold">DUI/Criminal</span></td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-red-50 text-red-600">No</span></td><td class="py-3 px-4 text-brand-charcoal/60">Not ready</td><td class="py-3 px-4 text-brand-charcoal/50">May 29, 2026</td></tr>
-<tr class="border-b border-brand-border/50 hover:bg-brand-cream/50"><td class="py-3 px-4">242</td><td class="py-3 px-4 font-medium">David Park</td><td class="py-3 px-4 text-brand-charcoal/60">d.park@email.com</td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-gold/10 text-brand-gold">Real Estate</span></td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-green-50 text-green-700">Yes</span></td><td class="py-3 px-4 text-brand-charcoal/40">-</td><td class="py-3 px-4 text-brand-charcoal/50">May 28, 2026</td></tr>
-<tr class="border-b border-brand-border/50 hover:bg-brand-cream/50"><td class="py-3 px-4">241</td><td class="py-3 px-4 font-medium">Lisa Johnson</td><td class="py-3 px-4 text-brand-charcoal/60">l.johnson@email.com</td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-navy/10 text-brand-navy">Personal Injury</span></td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-red-50 text-red-600">No</span></td><td class="py-3 px-4 text-brand-charcoal/60">Found other attorney</td><td class="py-3 px-4 text-brand-charcoal/50">May 27, 2026</td></tr>
-<tr class="hover:bg-brand-cream/50"><td class="py-3 px-4">240</td><td class="py-3 px-4 font-medium">Michael Brown</td><td class="py-3 px-4 text-brand-charcoal/60">m.brown@email.com</td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-gold/10 text-brand-gold">Family Law</span></td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-green-50 text-green-700">Yes</span></td><td class="py-3 px-4 text-brand-charcoal/40">-</td><td class="py-3 px-4 text-brand-charcoal/50">May 26, 2026</td></tr>
-</tbody></table>
-<div class="flex items-center justify-between mt-4 pt-4 border-t border-brand-border">
-<span class="text-xs text-brand-charcoal/50">Showing 1-8 of 247 responses</span>
-<div class="flex gap-1">
-<button class="px-3 py-1 text-xs rounded bg-brand-gold text-white">1</button>
-<button class="px-3 py-1 text-xs rounded bg-brand-cream text-brand-charcoal/60 hover:bg-brand-border">2</button>
-<button class="px-3 py-1 text-xs rounded bg-brand-cream text-brand-charcoal/60 hover:bg-brand-border">3</button>
-<button class="px-3 py-1 text-xs rounded bg-brand-cream text-brand-charcoal/60 hover:bg-brand-border">...</button>
-<button class="px-3 py-1 text-xs rounded bg-brand-cream text-brand-charcoal/60 hover:bg-brand-border">31</button>
-</div>
-</div>
-</div>
-</div>
+</main>
 
-<!-- PAGE: SCHEDULED -->
-<div id="page-scheduled" class="page flex-1 p-8">
-<div class="grid grid-cols-3 gap-6 mb-8">
-<div class="bg-brand-navy rounded-2xl p-6 text-white shadow-lg">
-<div class="text-[10px] uppercase tracking-[0.18em] text-brand-gold">Total Scheduled</div>
-<div class="font-serif text-5xl mt-3 font-bold">142</div>
-<div class="text-xs text-white/50 mt-2">Consultations booked</div>
-</div>
-<div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
-<div class="text-[10px] uppercase tracking-[0.18em] text-brand-charcoal/50">This Month</div>
-<div class="font-serif text-4xl mt-3 text-brand-navy font-bold">25</div>
-<div class="text-xs text-green-600 mt-2">+8 from last month</div>
-</div>
-<div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
-<div class="text-[10px] uppercase tracking-[0.18em] text-brand-charcoal/50">Conversion Rate</div>
-<div class="font-serif text-4xl mt-3 text-brand-navy font-bold">57.5%</div>
-<div class="text-xs text-brand-charcoal/40 mt-2">Of all survey responses</div>
-</div>
-</div>
-<div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
-<h3 class="font-serif text-xl text-brand-navy">Scheduled Consultations</h3>
-<p class="text-xs text-brand-charcoal/40 mt-1">Clients who booked a consultation</p>
-<div class="h-0.5 w-8 bg-brand-gold mt-3 rounded-full mb-4"></div>
-<table class="w-full text-sm">
-<thead><tr class="border-b border-brand-border">
-<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy">ID</th>
-<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy">Name</th>
-<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy">Email</th>
-<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy">Survey Type</th>
-<th class="text-left py-3 px-4 font-serif font-semibold text-brand-navy">Date</th>
-</tr></thead>
-<tbody>
-<tr class="border-b border-brand-border/50 hover:bg-brand-cream/50"><td class="py-3 px-4">247</td><td class="py-3 px-4 font-medium">Sarah Mitchell</td><td class="py-3 px-4 text-brand-charcoal/60">s.mitchell@email.com</td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-gold/10 text-brand-gold">Personal Injury</span></td><td class="py-3 px-4 text-brand-charcoal/50">Jun 2, 2026</td></tr>
-<tr class="border-b border-brand-border/50 hover:bg-brand-cream/50"><td class="py-3 px-4">245</td><td class="py-3 px-4 font-medium">Maria Chen</td><td class="py-3 px-4 text-brand-charcoal/60">m.chen@email.com</td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-gold/10 text-brand-gold">Business Law</span></td><td class="py-3 px-4 text-brand-charcoal/50">May 31, 2026</td></tr>
-<tr class="border-b border-brand-border/50 hover:bg-brand-cream/50"><td class="py-3 px-4">244</td><td class="py-3 px-4 font-medium">Robert Davis</td><td class="py-3 px-4 text-brand-charcoal/60">r.davis@email.com</td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-navy/10 text-brand-navy">Estate Planning</span></td><td class="py-3 px-4 text-brand-charcoal/50">May 30, 2026</td></tr>
-<tr class="border-b border-brand-border/50 hover:bg-brand-cream/50"><td class="py-3 px-4">242</td><td class="py-3 px-4 font-medium">David Park</td><td class="py-3 px-4 text-brand-charcoal/60">d.park@email.com</td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-gold/10 text-brand-gold">Real Estate</span></td><td class="py-3 px-4 text-brand-charcoal/50">May 28, 2026</td></tr>
-<tr class="hover:bg-brand-cream/50"><td class="py-3 px-4">240</td><td class="py-3 px-4 font-medium">Michael Brown</td><td class="py-3 px-4 text-brand-charcoal/60">m.brown@email.com</td><td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs bg-brand-gold/10 text-brand-gold">Family Law</span></td><td class="py-3 px-4 text-brand-charcoal/50">May 26, 2026</td></tr>
-</tbody></table>
-</div>
-</div>
-
-<!-- PAGE: REPORTS -->
-<div id="page-reports" class="page flex-1 p-8">
-<div class="grid grid-cols-2 gap-6 mb-8">
-<div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
-<h3 class="font-serif text-xl text-brand-navy">Monthly Intake Summary</h3>
-<p class="text-xs text-brand-charcoal/40 mt-1">Intakes by month with scheduled breakdown</p>
-<div class="h-0.5 w-8 bg-brand-gold mt-3 rounded-full"></div>
-<div class="mt-4" style="height:260px"><canvas id="monthlyReport"></canvas></div>
-</div>
-<div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
-<h3 class="font-serif text-xl text-brand-navy">Practice Area Performance</h3>
-<p class="text-xs text-brand-charcoal/40 mt-1">Conversion rate by practice area</p>
-<div class="h-0.5 w-8 bg-brand-gold mt-3 rounded-full"></div>
-<div class="mt-4" style="height:260px"><canvas id="practiceReport"></canvas></div>
-</div>
-</div>
-<div class="bg-brand-paper rounded-2xl p-6 border border-brand-border shadow-sm">
-<h3 class="font-serif text-xl text-brand-navy">Key Metrics Summary</h3>
-<div class="h-0.5 w-8 bg-brand-gold mt-3 rounded-full mb-6"></div>
-<div class="grid grid-cols-4 gap-6">
-<div class="text-center p-4 bg-brand-cream rounded-xl">
-<div class="font-serif text-3xl text-brand-navy font-bold">247</div>
-<div class="text-xs text-brand-charcoal/50 mt-1">Total Intakes</div>
-</div>
-<div class="text-center p-4 bg-brand-cream rounded-xl">
-<div class="font-serif text-3xl text-brand-navy font-bold">57.5%</div>
-<div class="text-xs text-brand-charcoal/50 mt-1">Conversion Rate</div>
-</div>
-<div class="text-center p-4 bg-brand-cream rounded-xl">
-<div class="font-serif text-3xl text-brand-navy font-bold">6</div>
-<div class="text-xs text-brand-charcoal/50 mt-1">Practice Areas</div>
-</div>
-<div class="text-center p-4 bg-brand-cream rounded-xl">
-<div class="font-serif text-3xl text-brand-navy font-bold">30.4%</div>
-<div class="text-xs text-brand-charcoal/50 mt-1">Cost Concern Rate</div>
-</div>
-</div>
-</div>
-</div>
-
-</div><!-- end main content -->
-
-<!-- JAVASCRIPT -->
 <script>
-const GOLD = '#B89968'; const NAVY = '#0F1419'; const GOLD2 = '#C9A574'; const BORDER = '#E8E4DC';
-Chart.defaults.font.family = 'Inter, system-ui, sans-serif';
-Chart.defaults.font.size = 11;
-Chart.defaults.color = '#2C2C2C80';
+const G='#B89968',N='#0F1419',G2='#C9A574',B='#E8E4DC';
+Chart.defaults.font.family='Inter,system-ui,sans-serif';Chart.defaults.font.size=11;Chart.defaults.color='#2C2C2C80';
+const titles={overview:'Overview',ratings:'Ratings',notsigned:'Not Signed',responses:'Responses'};
+let ratingsInit=false,notSignedInit=false;
+function showPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');document.getElementById('page-title').textContent=titles[p];document.querySelectorAll('.nav-link').forEach(l=>{l.classList.remove('nav-active','text-white');l.classList.add('text-white/60')});const n=document.getElementById('nav-'+p);n.classList.add('nav-active','text-white');n.classList.remove('text-white/60');if(p==='ratings'&&!ratingsInit){initRatings();ratingsInit=true}if(p==='notsigned'&&!notSignedInit){initNotSigned();notSignedInit=true}}
 
-const titles = { overview:'Overview', responses:'All Responses', scheduled:'Scheduled Consultations', reports:'Reports' };
-let reportChartsInit = false;
+new Chart(document.getElementById('overviewVolume'),{type:'line',data:{labels:['Jan','Feb','Mar','Apr','May','Jun'],datasets:[{label:'Total Surveys',data:[28,35,42,38,52,52],borderColor:G,backgroundColor:G+'20',fill:true,tension:0.4,pointBackgroundColor:G,pointRadius:4,borderWidth:2},{label:'Scheduled',data:[15,20,28,22,32,25],borderColor:N,backgroundColor:N+'10',fill:true,tension:0.4,pointBackgroundColor:N,pointRadius:3,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:16}}},scales:{y:{beginAtZero:true,grid:{color:B},border:{display:false}},x:{grid:{display:false},border:{display:false}}}}});
 
-function showPage(page) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-'+page).classList.add('active');
-  document.getElementById('page-title').textContent = titles[page];
-  document.querySelectorAll('.nav-link').forEach(l => { l.classList.remove('nav-active','text-white'); l.classList.add('text-white/60'); });
-  const nav = document.getElementById('nav-'+page);
-  nav.classList.add('nav-active','text-white'); nav.classList.remove('text-white/60');
-  if(page==='reports' && !reportChartsInit) { initReportCharts(); reportChartsInit=true; }
-}
+new Chart(document.getElementById('overviewMix'),{type:'radar',data:{labels:['Friendliness','Overall','Consultation','Responsiveness','Knowledge'],datasets:[{label:'Average',data:[4.8,4.6,4.5,4.7,4.5],borderColor:G,backgroundColor:G+'30',pointBackgroundColor:G,pointRadius:4,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,scales:{r:{beginAtZero:true,max:5,ticks:{stepSize:1,display:false},grid:{color:B},pointLabels:{font:{size:11}}}},plugins:{legend:{display:false}}}});
 
-// Overview Charts
-new Chart(document.getElementById('intakesChart'), {
-  type:'line', data:{ labels:['Jan','Feb','Mar','Apr','May','Jun'],
-  datasets:[{label:'Total Intakes',data:[28,35,42,38,52,52],borderColor:GOLD,backgroundColor:GOLD+'20',fill:true,tension:0.4,pointBackgroundColor:GOLD,pointRadius:4,borderWidth:2},
-  {label:'Scheduled',data:[15,20,28,22,32,25],borderColor:NAVY,backgroundColor:NAVY+'10',fill:true,tension:0.4,pointBackgroundColor:NAVY,pointRadius:3,borderWidth:2}]},
-  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:16}}},scales:{y:{beginAtZero:true,grid:{color:BORDER},border:{display:false}},x:{grid:{display:false},border:{display:false}}}}
-});
+function initRatings(){
+new Chart(document.getElementById('ratingTrends'),{type:'line',data:{labels:['Jan','Feb','Mar','Apr','May','Jun'],datasets:[{label:'Friendliness',data:[4.6,4.7,4.8,4.7,4.9,4.8],borderColor:G,tension:0.4,pointRadius:3,borderWidth:2},{label:'Overall',data:[4.3,4.4,4.5,4.5,4.7,4.6],borderColor:N,tension:0.4,pointRadius:3,borderWidth:2},{label:'Consultation',data:[4.2,4.3,4.4,4.5,4.6,4.5],borderColor:G2,tension:0.4,pointRadius:3,borderWidth:2},{label:'Responsiveness',data:[4.5,4.6,4.6,4.7,4.8,4.7],borderColor:'#8B7355',tension:0.4,pointRadius:3,borderWidth:2},{label:'Knowledge',data:[4.3,4.4,4.5,4.4,4.6,4.5],borderColor:'#D4C5A9',tension:0.4,pointRadius:3,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:12,font:{size:10}}}},scales:{y:{min:3,max:5,grid:{color:B},border:{display:false}},x:{grid:{display:false},border:{display:false}}}}});
+new Chart(document.getElementById('ratingDist'),{type:'bar',data:{labels:['1','2','3','4','5'],datasets:[{label:'Count',data:[3,8,28,85,123],backgroundColor:[N,'#4A4A4A','#8B7355',G2,G],borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:B},border:{display:false}},x:{grid:{display:false},border:{display:false}}}}});}
 
-new Chart(document.getElementById('surveyTypeChart'), {
-  type:'doughnut', data:{ labels:['Personal Injury','Family Law','Business Law','Estate Planning','DUI/Criminal','Real Estate'],
-  datasets:[{data:[72,48,38,35,30,24],backgroundColor:[GOLD,NAVY,GOLD2,'#8B7355','#D4C5A9','#4A4A4A'],borderWidth:0,hoverOffset:8}]},
-  options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{position:'right',labels:{usePointStyle:true,padding:12,font:{size:11}}}}}
-});
-
-new Chart(document.getElementById('reasonsChart'), {
-  type:'bar', data:{ labels:['Cost concerns','Not ready','Found other attorney','No response','Resolved independently','Other'],
-  datasets:[{label:'Count',data:[32,25,18,15,10,5],backgroundColor:GOLD,borderRadius:6,barThickness:18}]},
-  options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,grid:{color:BORDER},border:{display:false}},y:{grid:{display:false},border:{display:false}}}}
-});
-
-new Chart(document.getElementById('conversionChart'), {
-  type:'doughnut', data:{ labels:['Scheduled','Not Scheduled'],
-  datasets:[{data:[142,105],backgroundColor:[GOLD,NAVY],borderWidth:0,hoverOffset:8}]},
-  options:{responsive:true,maintainAspectRatio:false,cutout:'70%',plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:16}}}}
-});
-
-function initReportCharts() {
-  new Chart(document.getElementById('monthlyReport'), {
-    type:'bar', data:{ labels:['Jan','Feb','Mar','Apr','May','Jun'],
-    datasets:[{label:'Scheduled',data:[15,20,28,22,32,25],backgroundColor:GOLD,borderRadius:6},{label:'Not Scheduled',data:[13,15,14,16,20,27],backgroundColor:NAVY,borderRadius:6}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:16}}},scales:{y:{beginAtZero:true,grid:{color:BORDER},border:{display:false},stacked:true},x:{grid:{display:false},border:{display:false},stacked:true}}}
-  });
-  new Chart(document.getElementById('practiceReport'), {
-    type:'bar', data:{ labels:['Personal Injury','Family Law','Business','Estate Plan.','DUI/Criminal','Real Estate'],
-    datasets:[{label:'Conversion %',data:[65,52,68,71,43,58],backgroundColor:GOLD,borderRadius:6,barThickness:24}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,max:100,grid:{color:BORDER},border:{display:false},ticks:{callback:v=>v+'%'}},x:{grid:{display:false},border:{display:false}}}}
-  });
-}
+function initNotSigned(){
+new Chart(document.getElementById('reasonsChart'),{type:'bar',data:{labels:['Cost / fees too high','Decided to use a different firm','Decided not to pursue legal matter','Time to get consultation','Other'],datasets:[{label:'Count',data:[35,24,22,16,8],backgroundColor:G,borderRadius:6,barThickness:18}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,grid:{color:B},border:{display:false}},y:{grid:{display:false},border:{display:false}}}}});
+new Chart(document.getElementById('reasonsTrend'),{type:'bar',data:{labels:['Jan','Feb','Mar','Apr','May','Jun'],datasets:[{label:'Cost/fees',data:[4,5,6,7,6,7],backgroundColor:G,borderRadius:4},{label:'Different firm',data:[3,3,4,4,5,5],backgroundColor:N,borderRadius:4},{label:'Not pursuing',data:[2,3,3,4,5,5],backgroundColor:G2,borderRadius:4},{label:'Time to consult',data:[2,2,3,2,3,4],backgroundColor:'#8B7355',borderRadius:4},{label:'Other',data:[1,1,1,2,1,2],backgroundColor:'#D4C5A9',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:10,font:{size:10}}}},scales:{y:{beginAtZero:true,grid:{color:B},border:{display:false},stacked:true},x:{grid:{display:false},border:{display:false},stacked:true}}}});}
 </script>
-</body>
-</html>
+</body></html>
