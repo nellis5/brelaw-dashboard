@@ -411,4 +411,100 @@ window.addEventListener('load',function(){ if(D) setTimeout(renderAll,100); });
   window.addEventListener('load',function(){ setTimeout(forceLive,250); setTimeout(forceLive,800); });
 })();
 </script>
+<script>
+/* ===== BRE LAW CORRECTIVE PASS 2: Ratings + Not Signed pages ===== */
+(function(){
+  var API="https://brelaw-dashboard-api-production.up.railway.app";
+  var DASH='\u2014';
+  var LIVE=null;
+  function qa(s){return Array.prototype.slice.call(document.querySelectorAll(s));}
+  function emptyCanvas(id){
+    var c=document.getElementById(id); if(!c) return;
+    try{ var inst=(window.Chart&&Chart.getChart)?Chart.getChart(c):null; if(inst) inst.destroy(); }catch(e){}
+    c.style.display='none';
+    var box=c.parentElement;
+    if(box && !box.querySelector('.bre-corrective-nodata')){
+      var d=document.createElement('div');
+      d.className='bre-corrective-nodata text-center text-brand-charcoal/40 text-sm py-12';
+      d.textContent='No data yet'; box.appendChild(d);
+    }
+  }
+  function hasChart(id){ var c=document.getElementById(id); if(!c) return false; return !!((window.Chart&&Chart.getChart)?Chart.getChart(c):null); }
+  /* Ratings: set each category value by its label <p>/text */
+  function setRatingValue(label, val){
+    var nodes=qa('#page-ratings p, #page-ratings span, #page-ratings div');
+    for(var i=0;i<nodes.length;i++){
+      var el=nodes[i];
+      if(el.children.length===0 && el.textContent.trim().toLowerCase()===label.toLowerCase()){
+        var row=el.parentElement;
+        var big=row.querySelector('.text-3xl,.text-2xl,.text-xl,.text-base');
+        if(big && big!==el){
+          var unit=big.querySelector('span');
+          var num=(val==null)?DASH:val;
+          if(big.childNodes.length && big.childNodes[0].nodeType===3){ big.childNodes[0].nodeValue=num+' '; }
+          else { big.textContent = (val==null)? DASH : (num+' / 5'); }
+        }
+        return;
+      }
+    }
+  }
+  function forceRatings(){
+    if(!LIVE) return;
+    var bc=(LIVE.ratings&&LIVE.ratings.byCategory)||{};
+    setRatingValue('friendliness', bc.friendliness);
+    setRatingValue('overall experience', bc.overall);
+    setRatingValue('consultation experience', bc.consultExp);
+    setRatingValue('responsiveness', bc.responsiveness);
+    setRatingValue('knowledge', bc.knowledge);
+    var m=LIVE.monthly||{labels:[]};
+    if(!(m.labels&&m.labels.length)) emptyCanvas('ratingTrends');
+    var dist=(LIVE.ratings&&LIVE.ratings.distribution)||[0,0,0,0,0];
+    if(!dist.some(function(x){return x>0;})) emptyCanvas('ratingDist');
+  }
+  /* Not Signed: set value cards by their label text */
+  function setNSCard(label, value, sub){
+    var nodes=qa('#page-notsigned p, #page-notsigned span, #page-notsigned div');
+    for(var i=0;i<nodes.length;i++){
+      var el=nodes[i];
+      if(el.children.length===0 && el.textContent.trim().toLowerCase()===label.toLowerCase()){
+        var card=el.closest('.rounded-xl')||el.parentElement;
+        var big=card.querySelector('.text-3xl,.text-2xl,.text-xl,.text-base');
+        if(big && big!==el) big.textContent=value;
+        if(sub!=null){
+          var smalls=card.querySelectorAll('[class*="text-[11px]"],.text-xs,.text-sm');
+          var s=smalls[smalls.length-1];
+          if(s && s!==el && s!==big) s.textContent=sub;
+        }
+        return;
+      }
+    }
+  }
+  function forceNotSigned(){
+    if(!LIVE) return;
+    var ns=LIVE.notSigned||{total:0,pct:0,topReason:null,otherCount:0,reasons:[]};
+    setNSCard('total not signed', ns.total||0, (ns.pct||0)+'% of all surveys');
+    setNSCard('#1 reason', ns.topReason?ns.topReason.reason:DASH, ns.topReason?(ns.topReason.count+' responses ('+ns.topReason.pct+'%)'):'No data yet');
+    setNSCard('"other" responses', ns.otherCount||0, 'Custom explanations provided');
+    var reasons=ns.reasons||[];
+    if(!reasons.some(function(r){return r.count>0;})) emptyCanvas('reasonsChart');
+    var m=LIVE.monthly||{labels:[],reasons:[]};
+    var hasTrend=(m.labels&&m.labels.length)&&(m.reasons||[]).some(function(s){return s.data&&s.data.some(function(x){return x>0;});});
+    if(!hasTrend) emptyCanvas('reasonsTrend');
+  }
+  function applyAll(){ forceRatings(); forceNotSigned(); }
+  function load(){
+    fetch(API.replace(/\/$/,'')+'/api/dashboard').then(function(r){return r.json();}).then(function(d){ LIVE=d; applyAll(); }).catch(function(e){ console.warn('[BRELaw corrective2] load failed',e); });
+  }
+  /* Re-apply whenever a page is shown (charts get drawn by demo init on first nav) */
+  var prevShow=window.showPage;
+  window.showPage=function(p){
+    if(typeof prevShow==='function'){ try{ prevShow(p); }catch(e){} }
+    if(!LIVE) return;
+    if(p==='ratings'){ forceRatings(); setTimeout(forceRatings,120); }
+    if(p==='notsigned'){ forceNotSigned(); setTimeout(forceNotSigned,120); }
+  };
+  if(document.readyState!=='loading') load(); else document.addEventListener('DOMContentLoaded',load);
+  window.addEventListener('load',function(){ setTimeout(applyAll,400); setTimeout(applyAll,1000); });
+})();
+</script>
 </body></html>
