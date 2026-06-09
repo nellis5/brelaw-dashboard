@@ -598,3 +598,57 @@ window.addEventListener('load',function(){ if(D) setTimeout(renderAll,100); });
   window.addEventListener('load',function(){ setTimeout(fixResponses,500); setTimeout(fixResponses,1200); });
 })();
 </script>
+
+<script>
+/* ===== BRE LAW AUTO-REFRESH (live 24/7 polling) ===== */
+(function(){
+  var REFRESH_MS = 60000;        // re-sync every 60 seconds
+  var lastReload = Date.now();
+  function loggedIn(){
+    var app = document.getElementById('app');
+    return app && app.style.display !== 'none';
+  }
+  /* Reloading re-runs every live-data pass's fetch(), guaranteeing the
+     freshest Airtable data is rendered across all pages and charts. */
+  function refresh(){
+    if(!loggedIn()) return;                 // never interrupt the login screen
+    if(document.hidden) return;             // don't reload a hidden tab
+    if(Date.now() - lastReload < 5000) return; // debounce rapid triggers
+    lastReload = Date.now();
+    try { sessionStorage.setItem('bre_authed','1'); } catch(e){}
+    window.location.reload();
+  }
+  /* Keep the user signed in across auto-reloads */
+  var prevLogin = window.doLogin;
+  window.doLogin = function(){
+    if(typeof prevLogin === 'function'){ try{ prevLogin(); }catch(e){} }
+    try { sessionStorage.setItem('bre_authed','1'); } catch(e){}
+  };
+  var prevLogout = window.doLogout;
+  window.doLogout = function(){
+    if(typeof prevLogout === 'function'){ try{ prevLogout(); }catch(e){} }
+    try { sessionStorage.removeItem('bre_authed'); } catch(e){}
+  };
+  function restoreSession(){
+    var authed = false;
+    try { authed = sessionStorage.getItem('bre_authed') === '1'; } catch(e){}
+    if(authed && typeof window.doLogin === 'function'){
+      var ls = document.getElementById('login-screen');
+      var app = document.getElementById('app');
+      if(ls && app){ ls.style.display='none'; app.style.display='flex'; }
+      if(typeof window.initOverviewCharts === 'function'){ try{ window.initOverviewCharts(); }catch(e){} }
+    }
+  }
+  function start(){
+    restoreSession();
+    setInterval(refresh, REFRESH_MS);
+    // Refresh immediately when the user returns to the tab
+    document.addEventListener('visibilitychange', function(){
+      if(!document.hidden) refresh();
+    });
+    window.addEventListener('focus', refresh);
+  }
+  if(document.readyState !== 'loading') start();
+  else document.addEventListener('DOMContentLoaded', start);
+})();
+</script>
