@@ -348,7 +348,7 @@ window.addEventListener('load',function(){ if(D) setTimeout(renderAll,100); });
     for(var i=0;i<lbls.length;i++){
       if(lbls[i].textContent.trim().toLowerCase()===labelText.toLowerCase()){
         var card=lbls[i].closest('.rounded-xl')||lbls[i].parentElement;
-        var big=card.querySelector('.text-3xl')||card.querySelector('.text-2xl')||card.querySelector('.text-base.font-semibold');         if(!big){ var cand=card.querySelectorAll('div,span'); for(var k=0;k<cand.length;k++){ if(/text-(3xl|2xl)/.test(cand[k].className)){ big=cand[k]; break; } } }         if(big) big.textContent=value;
+        var big=card.querySelector('.text-3xl,.text-2xl,.text-xl,.text-base.font-semibold');         if(!big){ var cand=card.querySelectorAll('div,span'); for(var k=0;k<cand.length;k++){ if(/text-(3xl|2xl)/.test(cand[k].className)){ big=cand[k]; break; } } }         if(big) big.textContent=value;
         if(sub!=null){
           var smalls=card.querySelectorAll('.text-base,[class*="text-[11px]"]');
           var s=smalls[smalls.length-1];
