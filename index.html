@@ -44,12 +44,25 @@ body:not([data-live-ready]) .page canvas{visibility:hidden!important;}
   var mo=new MutationObserver(blank);
   if(document.documentElement) mo.observe(document.documentElement,{childList:true,subtree:true});
   document.addEventListener('DOMContentLoaded',function(){ blank(); });
-  /* Reveal once live data render has run (initOverviewCharts is called after fetch) */
+  /* Reveal ONLY after live data has actually rendered (not on window.load, which
+   fires before the async fetch resolves and would expose the demo charts). */
   function ready(){ document.body && document.body.setAttribute('data-live-ready','1'); }
-  var pInit=window.initOverviewCharts;
-  Object.defineProperty(window,'initOverviewCharts',{configurable:true,get:function(){return this.__ioc;},set:function(fn){this.__ioc=function(){ var r=fn&&fn.apply(this,arguments); ready(); return r; };}});
-  if(pInit) window.initOverviewCharts=pInit;
-  window.addEventListener('load',ready);
+  /* Detect live render: the "Last synced" line gets a real date once the API
+     fetch resolves and renderSynced() runs. Poll for it, then reveal. */
+  function liveRendered(){
+    var els=document.querySelectorAll('#page-overview p');
+    for(var i=0;i<els.length;i++){
+      var t=els[i].textContent;
+      if(/last synced/i.test(t) && /\d{4}/.test(t) && !/2 min ago/i.test(t)) return true;
+    }
+    return false;
+  }
+  var tries=0;
+  var poll=setInterval(function(){
+    tries++;
+    if(liveRendered()){ clearInterval(poll); ready(); }
+    else if(tries>=40){ clearInterval(poll); ready(); } /* ~8s fallback so it never stays hidden */
+  },200);
 })();
 </script>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
