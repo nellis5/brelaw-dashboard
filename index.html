@@ -757,3 +757,33 @@ window.addEventListener('load',function(){ if(D) setTimeout(renderAll,100); });
   window.addEventListener('load', restore);
 })();
 </script>
+
+<script>
+/* ===== BRE LAW LOGIN CREDENTIALS (client-side gate) ===== */
+(function(){
+  var EMAIL='cellis@brelaw.com';
+  var PASS='Survey*202';
+  function authed(){ try{ return localStorage.getItem('bre_authed')==='1'; }catch(e){ return false; } }
+  function showError(show){
+    var err=document.getElementById('login-error');
+    if(err){ if(show) err.classList.remove('hidden'); else err.classList.add('hidden'); }
+  }
+  /* realLogin = the full existing login chain (anti-flash, auto-refresh, charts, etc.) */
+  var realLogin=window.doLogin;
+  window.doLogin=function(){
+    /* Allow programmatic restore after an auto-refresh reload (already authenticated) */
+    if(authed()){ if(typeof realLogin==='function') return realLogin.apply(this,arguments); return; }
+    var emailEl=document.getElementById('login-email');
+    var passEl=document.getElementById('login-pass');
+    var email=(emailEl&&emailEl.value||'').trim().toLowerCase();
+    var pass=(passEl&&passEl.value||'');
+    if(email===EMAIL.toLowerCase() && pass===PASS){
+      showError(false);
+      if(typeof realLogin==='function') return realLogin.apply(this,arguments);
+    } else {
+      showError(true);
+      if(passEl) passEl.value='';
+    }
+  };
+})();
+</script>
