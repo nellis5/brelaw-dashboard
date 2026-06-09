@@ -566,3 +566,35 @@ window.addEventListener('load',function(){ if(D) setTimeout(renderAll,100); });
   window.addEventListener('load',function(){ setTimeout(apply,500); setTimeout(apply,1200); });
 })();
 </script>
+
+<script>
+/* ===== BRE LAW CORRECTIVE PASS 4: Responses count + static pager cleanup ===== */
+(function(){
+  var API="https://brelaw-dashboard-api-production.up.railway.app";
+  var LIVE=null;
+  function qa(s){return Array.prototype.slice.call(document.querySelectorAll(s));}
+  function fixResponses(){
+    var page=document.getElementById('page-responses');
+    if(!page) return;
+    var rows=(LIVE&&LIVE.lists&&LIVE.lists.responses)?LIVE.lists.responses.length:0;
+    /* update the 'Showing X of Y' label */
+    qa('#page-responses span, #page-responses p, #page-responses div').forEach(function(el){
+      if(el.children.length===0 && /showing\s+[\d-]+\s+of\s+\d+/i.test(el.textContent)){
+        el.textContent='Showing '+(rows?('1-'+rows):'0')+' of '+rows+' response'+(rows===1?'':'s');
+      }
+    });
+    /* hide static demo pagination buttons/links (numbers, ellipsis, prev/next) */
+    qa('#page-responses a, #page-responses button').forEach(function(b){
+      var t=b.textContent.trim();
+      if(/^\d+$/.test(t) || /\u2026|\.\.\.|^prev|^next/i.test(t)){ b.style.display='none'; }
+    });
+  }
+  function load(){ fetch(API.replace(/\/$/,'')+'/api/dashboard').then(function(r){return r.json();}).then(function(d){ LIVE=d; fixResponses(); setTimeout(fixResponses,200); }).catch(function(e){ console.warn('[BRELaw pass4] load failed',e); fixResponses(); }); }
+  var prevShow=window.showPage;
+  window.showPage=function(p){ if(typeof prevShow==='function'){ try{ prevShow(p);}catch(e){} } if(p==='responses'){ fixResponses(); setTimeout(fixResponses,120);} };
+  var prevLogin=window.doLogin;
+  window.doLogin=function(){ if(typeof prevLogin==='function'){ try{ prevLogin();}catch(e){} } setTimeout(fixResponses,250); };
+  if(document.readyState!=='loading') load(); else document.addEventListener('DOMContentLoaded',load);
+  window.addEventListener('load',function(){ setTimeout(fixResponses,500); setTimeout(fixResponses,1200); });
+})();
+</script>
