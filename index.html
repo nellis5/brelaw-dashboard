@@ -508,3 +508,61 @@ window.addEventListener('load',function(){ if(D) setTimeout(renderAll,100); });
 })();
 </script>
 </body></html>
+
+<script>
+/* ===== BRE LAW CORRECTIVE PASS 3: clear residual demo list cards + stars ===== */
+(function(){
+  var API="https://brelaw-dashboard-api-production.up.railway.app";
+  var LIVE=null;
+  function qa(s){return Array.prototype.slice.call(document.querySelectorAll(s));}
+  function findSection(headingText){
+    var heads=qa('#page-notsigned h3, #page-notsigned h4');
+    for(var i=0;i<heads.length;i++){
+      if(heads[i].textContent.trim().toLowerCase().indexOf(headingText.toLowerCase())>=0){
+        return heads[i].closest('.rounded-xl') || heads[i].parentElement;
+      }
+    }
+    return null;
+  }
+  function renderItems(headingText, items){
+    var sec=findSection(headingText);
+    if(!sec) return;
+    qa('*').slice(0,0); // noop
+    var cards=sec.querySelectorAll('.bg-brand-cream');
+    for(var j=0;j<cards.length;j++){ cards[j].remove(); }
+    var holder=sec.querySelector('.bre-list3');
+    if(!holder){ holder=document.createElement('div'); holder.className='bre-list3 space-y-3 mt-3'; sec.appendChild(holder); }
+    holder.innerHTML='';
+    if(!items || !items.length){ holder.innerHTML='<div class="text-sm text-brand-charcoal/40 py-4">No responses yet.</div>'; return; }
+    items.forEach(function(it){
+      var d=document.createElement('div');
+      d.className='bg-brand-cream rounded-lg p-3 text-sm';
+      d.innerHTML='<div class="font-medium text-brand-navy">'+(it.name||'Anonymous')+' <span class="text-[11px] text-brand-charcoal/50">'+(it.date||'')+'</span></div><div class="text-brand-charcoal/80 mt-1">'+(it.text||'')+'</div>';
+      holder.appendChild(d);
+    });
+  }
+  function clearOverviewStars(){
+    /* remove hardcoded star glyphs when KPI has no live value */
+    qa('#page-overview .text-brand-gold').forEach(function(el){
+      if(el.children.length===0 && /^[\u2605\u2606\s]+$/.test(el.textContent.trim()) && el.textContent.trim().length){
+        var t=(LIVE&&LIVE.totals)||{};
+        if(t.avgFriendliness==null && t.avgOverall==null){ el.textContent=''; }
+      }
+    });
+  }
+  function apply(){
+    if(!LIVE) return;
+    var ns=LIVE.notSigned||{otherExplanations:[],feedback:[]};
+    renderItems('Other', ns.otherExplanations||[]);
+    renderItems('Additional Feedback', ns.feedback||[]);
+    clearOverviewStars();
+  }
+  function load(){ fetch(API.replace(/\/$/,'')+'/api/dashboard').then(function(r){return r.json();}).then(function(d){ LIVE=d; apply(); setTimeout(apply,200); }).catch(function(e){ console.warn('[BRELaw pass3] load failed',e); }); }
+  var prevShow=window.showPage;
+  window.showPage=function(p){ if(typeof prevShow==='function'){ try{ prevShow(p);}catch(e){} } if(LIVE){ apply(); setTimeout(apply,120);} };
+  var prevLogin=window.doLogin;
+  window.doLogin=function(){ if(typeof prevLogin==='function'){ try{ prevLogin();}catch(e){} } if(LIVE){ apply(); setTimeout(apply,200);} else { load(); setTimeout(apply,400);} };
+  if(document.readyState!=='loading') load(); else document.addEventListener('DOMContentLoaded',load);
+  window.addEventListener('load',function(){ setTimeout(apply,500); setTimeout(apply,1200); });
+})();
+</script>
