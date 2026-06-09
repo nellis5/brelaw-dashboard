@@ -150,3 +150,114 @@ new Chart(document.getElementById('reasonsChart'),{type:'bar',data:{labels:['Cos
 new Chart(document.getElementById('reasonsTrend'),{type:'bar',data:{labels:['Jan','Feb','Mar','Apr','May','Jun'],datasets:[{label:'Cost/fees',data:[4,5,6,7,6,7],backgroundColor:G,borderRadius:4},{label:'Different firm',data:[3,3,4,4,5,5],backgroundColor:N,borderRadius:4},{label:'Not pursuing',data:[2,3,3,4,5,5],backgroundColor:G2,borderRadius:4},{label:'Time to consult',data:[2,2,3,2,3,4],backgroundColor:'#8B7355',borderRadius:4},{label:'Other',data:[1,1,1,2,1,2],backgroundColor:'#D4C5A9',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:10,font:{size:10}}}},scales:{y:{beginAtZero:true,grid:{color:B},border:{display:false},stacked:true},x:{grid:{display:false},border:{display:false},stacked:true}}}});}
 </script>
 </body></html>
+
+<script>
+/* ===== BRE LAW LIVE DATA INTEGRATION (appended) ===== */
+(function(){
+  // Set this to your Railway URL once deployed, e.g. "https://brelaw-api.up.railway.app"
+  const API_BASE = "";
+  const $ = s => document.querySelector(s);
+  const fmtPct = v => v==null ? "\u2014" : v.toFixed(1)+"%";
+  const fmtNum = v => v==null ? "\u2014" : v;
+  let DATA=null, activeFilter=null;
+
+  /* --- 1. Relabel + tag the funnel cards (find by current label text) --- */
+  function relabelCards(){
+    document.querySelectorAll('#page-overview .uppercase').forEach(lbl=>{
+      const t=lbl.textContent.trim().toLowerCase();
+      const card=lbl.closest('div');
+      if(t==='% signed'){lbl.textContent='CONSULTATION BOOKED';card.setAttribute('data-kpi','booked');tagSub(card,'Submitted survey & scheduled a consult');}
+      else if(t==='% not signed'){lbl.textContent='NO CONSULTATION';card.setAttribute('data-kpi','noconsult');tagSub(card,'Did not schedule a consultation');}
+      else if(t==='hire rate'){lbl.textContent='RETAINED / SIGNED';card.setAttribute('data-kpi','retained');tagSub(card,'Of booked consults, hired & retained BRE Law');}
+      else if(t==='low-score count'){card.setAttribute('data-kpi','lowscore');tagSub(card,'Composite intake score below 3 (needs review)');}
+      else if(t==='total surveys'){card.setAttribute('data-kpi','all');}
+    });
+  }
+  function tagSub(card,text){
+    const subs=card.querySelectorAll('.text-\\[11px\\]');
+    const sub=subs[subs.length-1];
+    if(sub) sub.textContent=text;
+  }
+
+  /* --- 2. Make KPI cards clickable -> drill into Responses --- */
+  function wireDrilldowns(){
+    document.querySelectorAll('#page-overview [data-kpi]').forEach(card=>{
+      card.style.cursor='pointer';
+      card.title='Click to view these responses';
+      card.addEventListener('click',()=>{ applyFilter(card.getAttribute('data-kpi')); });
+    });
+  }
+  const FILTERS={
+    lowscore:{label:'Low scores (composite < 3)',fn:r=>r.lowScore},
+    booked:{label:'Consultation booked',fn:r=>r.scheduledConsult},
+    noconsult:{label:'No consultation',fn:r=>!r.scheduledConsult},
+    retained:{label:'Retained / signed',fn:r=>r.retained},
+    needsreview:{label:'Needs review',fn:r=>r.needsReview},
+    all:{label:null,fn:()=>true}
+  };
+  function applyFilter(key){
+    activeFilter=key;
+    if(typeof showPage==='function') showPage('responses');
+    renderResponses();
+  }
+
+  /* --- 3. Render the responses table from live data + filter chip --- */
+  function renderResponses(){
+    if(!DATA) return;
+    const tbody=document.querySelector('#page-responses tbody'); if(!tbody) return;
+    let rows=DATA.lists.responses;
+    const f=activeFilter&&FILTERS[activeFilter];
+    if(f&&f.fn) rows=rows.filter(f.fn);
+    renderChip(f?f.label:null, rows.length);
+    if(!rows.length){ tbody.innerHTML='<tr><td colspan="12" class="py-10 text-center text-brand-charcoal/50">No survey responses yet.</td></tr>'; return; }
+    tbody.innerHTML=rows.map(r=>`<tr><td class="py-3 px-2 font-medium">${r.name}</td><td class="py-3 px-2">${r.scheduledConsult?'Scheduled':'Not Sched.'}</td><td class="py-3 px-2">${r.leadSource||'\u2014'}</td><td class="py-3 px-2">${fmtNum(r.overall)}</td><td class="py-3 px-2">${fmtNum(r.friendly)}</td><td class="py-3 px-2">${fmtNum(r.responsive)}</td><td class="py-3 px-2">${fmtNum(r.knowledge)}</td><td class="py-3 px-2">${fmtNum(r.consultExp)}</td><td class="py-3 px-2">${r.retained?'Yes':(r.scheduledConsult?'No':'\u2014')}</td><td class="py-3 px-2">${r.noScheduleReason||'\u2014'}</td><td class="py-3 px-2">${r.feedback||'\u2014'}</td><td class="py-3 px-2">${r.date||'\u2014'}</td></tr>`).join('');
+  }
+  function renderChip(label,count){
+    const sec=document.querySelector('#page-responses'); if(!sec) return;
+    let chip=document.getElementById('filter-chip');
+    if(!label){ if(chip) chip.remove(); return; }
+    if(!chip){ chip=document.createElement('div'); chip.id='filter-chip'; chip.className='mb-3 inline-flex items-center gap-2 text-xs bg-brand-gold/15 text-brand-charcoal px-3 py-1.5 rounded-full'; sec.insertBefore(chip, sec.firstChild); }
+    chip.innerHTML=`Showing: ${label} \u00b7 ${count} result${count===1?'':'s'} <span style="cursor:pointer;font-weight:600;">\u2715 Clear</span>`;
+    chip.querySelector('span').onclick=()=>{ activeFilter=null; renderResponses(); };
+  }
+
+  /* --- 4. Populate overview KPI values --- */
+  function renderOverview(){
+    if(!DATA) return;
+    const t=DATA.totals;
+    setByLabel('avg friendliness', t.avgFriendliness==null?'\u2014':t.avgFriendliness);
+    setByLabel('avg overall experience', t.avgOverall==null?'\u2014':t.avgOverall);
+    setByLabel('total surveys', t.totalSurveys);
+    setByLabel('low-score count', t.lowScoreCount);
+    setByKpi('booked', fmtPct(t.consultBookedPct));
+    setByKpi('noconsult', fmtPct(t.noConsultPct));
+    setByKpi('retained', fmtPct(t.retainedPct));
+    const synced=document.querySelector('#page-title')&&document.querySelector('header p');
+    if(synced) synced.textContent='Last synced: '+new Date(DATA.syncedAt).toLocaleString();
+  }
+  function setByLabel(labelText,val){
+    document.querySelectorAll('#page-overview .uppercase').forEach(lbl=>{
+      if(lbl.textContent.trim().toLowerCase()===labelText){
+        const big=lbl.parentElement.querySelector('.text-3xl,.text-base'); if(big){ const span=big.querySelector('span'); big.childNodes[0].nodeValue=val; }
+      }
+    });
+  }
+  function setByKpi(kpi,val){
+    const card=document.querySelector(`#page-overview [data-kpi="${kpi}"]`); if(!card) return;
+    const big=card.querySelector('.text-3xl'); if(big) big.textContent=val;
+  }
+
+  /* --- 5. Fetch live data; fall back to existing demo content if no API --- */
+  function init(){
+    relabelCards(); wireDrilldowns();
+    if(!API_BASE){ console.log('[BRELaw] No API_BASE set \u2014 showing demo data.'); return; }
+    fetch(API_BASE.replace(/\/$/,'')+'/api/dashboard').then(r=>r.json()).then(d=>{
+      DATA=d; renderOverview();
+      const orig=window.showPage;
+      window.showPage=function(p){ if(typeof orig==='function') orig(p); if(p==='responses') renderResponses(); };
+      if(document.querySelector('#page-responses.active')) renderResponses();
+    }).catch(e=>console.warn('[BRELaw] sync failed, demo data shown',e));
+  }
+  if(document.readyState!=='loading') init(); else document.addEventListener('DOMContentLoaded',init);
+})();
+</script>
