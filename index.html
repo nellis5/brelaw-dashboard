@@ -1,5 +1,47 @@
 <!DOCTYPE html>
 <html lang="en"><head>
+<style id="bre-antiflash-css">
+/* Hide hardcoded demo content until live data has rendered, killing the flash */
+body:not([data-live-ready]) .bre-demo-hide{visibility:hidden!important;}
+</style>
+<script>
+/* ===== BRE LAW ANTI-FLASH (suppress hardcoded demo values pre-paint) ===== */
+(function(){
+  var DASH='\u2014';
+  function blank(){
+    try{
+      var ov=document.getElementById('page-overview');
+      if(ov){
+        /* Blank the big KPI numbers (4.8, 4.6, 247, 11, 57.5%, etc.) */
+        ov.querySelectorAll('.text-3xl,.text-2xl').forEach(function(big){
+          if(big.__bz) return; big.__bz=1;
+          var unit=big.querySelector('span');
+          if(big.childNodes.length && big.childNodes[0].nodeType===3){
+            big.childNodes[0].nodeValue=DASH+' ';
+          } else if(!unit){ big.textContent=DASH; }
+        });
+        /* Remove the demo star glyphs (\u2605) entirely */
+        ov.querySelectorAll('.text-brand-gold').forEach(function(el){
+          if(/^[\u2605\u2606\s]+$/.test(el.textContent.trim())) el.textContent='';
+        });
+      }
+      /* Wipe demo rows from the responses table */
+      var tb=document.querySelector('#page-responses tbody');
+      if(tb && !tb.__bz){ tb.__bz=1; tb.innerHTML=''; }
+    }catch(e){}
+  }
+  /* Run as the DOM streams in so demo values never paint */
+  var mo=new MutationObserver(blank);
+  if(document.documentElement) mo.observe(document.documentElement,{childList:true,subtree:true});
+  document.addEventListener('DOMContentLoaded',function(){ blank(); });
+  /* Reveal once live data render has run (initOverviewCharts is called after fetch) */
+  function ready(){ document.body && document.body.setAttribute('data-live-ready','1'); }
+  var pInit=window.initOverviewCharts;
+  Object.defineProperty(window,'initOverviewCharts',{configurable:true,get:function(){return this.__ioc;},set:function(fn){this.__ioc=function(){ var r=fn&&fn.apply(this,arguments); ready(); return r; };}});
+  if(pInit) window.initOverviewCharts=pInit;
+  window.addEventListener('load',ready);
+})();
+</script>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BRE Law - Client Intake Dashboard</title>
 <script src="https://cdn.tailwindcss.com"></script>
