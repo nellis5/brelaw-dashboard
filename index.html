@@ -154,8 +154,8 @@ new Chart(document.getElementById('reasonsTrend'),{type:'bar',data:{labels:['Jan
 <script>
 /* ===== BRE LAW LIVE DATA INTEGRATION (appended) ===== */
 (function(){
-  // Set this to your Railway URL once deployed, e.g. "https://brelaw-api.up.railway.app"
-  const API_BASE = "";
+    const API_BASE = "https://brelaw-dashboard-api-production.up.railway.app";
+
   const $ = s => document.querySelector(s);
   const fmtPct = v => v==null ? "\u2014" : v.toFixed(1)+"%";
   const fmtNum = v => v==null ? "\u2014" : v;
