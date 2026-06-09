@@ -2,7 +2,16 @@
 <html lang="en"><head>
 <style id="bre-antiflash-css">
 /* Hide hardcoded demo content until live data has rendered, killing the flash */
-body:not([data-live-ready]) .bre-demo-hide{visibility:hidden!important;}
+/* Hide hardcoded demo values until live data has rendered (kills the flash, pre-paint via CSS) */
+body:not([data-live-ready]) #page-overview .text-3xl,
+body:not([data-live-ready]) #page-overview .text-2xl,
+body:not([data-live-ready]) #page-overview .text-brand-gold,
+body:not([data-live-ready]) #page-ratings .text-3xl,
+body:not([data-live-ready]) #page-ratings .text-2xl,
+body:not([data-live-ready]) #page-ratings .text-base,
+body:not([data-live-ready]) #page-notsigned .text-3xl,
+body:not([data-live-ready]) #page-notsigned .text-2xl,
+body:not([data-live-ready]) #page-responses tbody{visibility:hidden!important;}
 </style>
 <script>
 /* ===== BRE LAW ANTI-FLASH (suppress hardcoded demo values pre-paint) ===== */
