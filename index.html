@@ -652,3 +652,43 @@ window.addEventListener('load',function(){ if(D) setTimeout(renderAll,100); });
   else document.addEventListener('DOMContentLoaded', start);
 })();
 </script>
+
+<script>
+/* ===== BRE LAW AUTO-REFRESH v2 (robust session + in-place re-sync) ===== */
+(function(){
+  var KEY='bre_authed';
+  function store(v){ try{ v?localStorage.setItem(KEY,'1'):localStorage.removeItem(KEY); }catch(e){} }
+  function authed(){ try{ return localStorage.getItem(KEY)==='1'; }catch(e){ return false; } }
+  /* Wrap login/logout (last override wins) to track auth in localStorage */
+  var pLogin=window.doLogin;
+  window.doLogin=function(){ if(typeof pLogin==='function'){ try{ pLogin(); }catch(e){} } store(true); };
+  var pLogout=window.doLogout;
+  window.doLogout=function(){ if(typeof pLogout==='function'){ try{ pLogout(); }catch(e){} } store(false); };
+  function loggedIn(){ var a=document.getElementById('app'); return a && a.style.display!=='none'; }
+  /* On load: if previously authed, run the FULL login chain so every
+     live-data pass re-fetches and renders the freshest Airtable data. */
+  function restore(){
+    if(authed() && !loggedIn() && typeof window.doLogin==='function'){
+      try{ window.doLogin(); }catch(e){}
+    }
+  }
+  /* Hard reload re-runs every pass's fetch() = guaranteed fresh data. */
+  var last=Date.now();
+  function resync(){
+    if(!loggedIn() || document.hidden) return;
+    if(Date.now()-last < 5000) return;
+    last=Date.now();
+    store(true);
+    window.location.reload();
+  }
+  function start(){
+    restore();
+    setInterval(resync, 60000);
+    document.addEventListener('visibilitychange', function(){ if(!document.hidden) resync(); });
+    window.addEventListener('focus', resync);
+  }
+  if(document.readyState!=='loading') start();
+  else document.addEventListener('DOMContentLoaded', start);
+  window.addEventListener('load', restore);
+})();
+</script>
