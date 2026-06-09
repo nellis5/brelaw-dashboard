@@ -261,3 +261,30 @@ new Chart(document.getElementById('reasonsTrend'),{type:'bar',data:{labels:['Jan
   if(document.readyState!=='loading') init(); else document.addEventListener('DOMContentLoaded',init);
 })();
 </script>
+
+<script>
+/* ===== BRE LAW RELABEL FIX (overrides earlier buggy relabelCards) ===== */
+(function(){
+  function fix(){
+    var labels = document.querySelectorAll('#page-overview [class*="text-[11px]"][class*="uppercase"]');
+    labels.forEach(function(lbl){
+      var t = lbl.textContent.trim().toLowerCase();
+      var card = lbl.closest('.rounded-xl') || lbl.parentElement;
+      // subtitle = last small text node in the card that is not the label
+      function setSub(text){
+        var smalls = card.querySelectorAll('[class*="text-[11px]"]');
+        var sub = smalls[smalls.length-1];
+        if(sub && sub!==lbl) sub.textContent = text;
+      }
+      if(t==='% signed'){ lbl.textContent='CONSULTATION BOOKED'; card.setAttribute('data-kpi','booked'); setSub('Submitted survey & scheduled a consult'); }
+      else if(t==='% not signed'){ lbl.textContent='NO CONSULTATION'; card.setAttribute('data-kpi','noconsult'); setSub('Did not schedule a consultation'); }
+      else if(t==='hire rate'){ lbl.textContent='RETAINED / SIGNED'; card.setAttribute('data-kpi','retained'); setSub('Of booked consults, hired & retained BRE Law'); }
+      else if(t==='low-score count'){ card.setAttribute('data-kpi','lowscore'); setSub('Composite intake score below 3 (needs review)'); }
+      else if(t==='total surveys'){ card.setAttribute('data-kpi','all'); }
+      // make clickable
+      if(card.getAttribute('data-kpi')){ card.style.cursor='pointer'; }
+    });
+  }
+  if(document.readyState!=='loading') setTimeout(fix,50); else document.addEventListener('DOMContentLoaded',function(){setTimeout(fix,50);});
+})();
+</script>
