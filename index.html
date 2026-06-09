@@ -227,10 +227,10 @@ new Chart(document.getElementById('reasonsTrend'),{type:'bar',data:{labels:['Jan
     const t=DATA.totals;
     setByLabel('avg friendliness', t.avgFriendliness==null?'\u2014':t.avgFriendliness);
     setByLabel('avg overall experience', t.avgOverall==null?'\u2014':t.avgOverall);
-    setByLabel('total surveys', t.totalSurveys);
-    setByLabel('low-score count', t.lowScoreCount);
-    setByKpi('booked', fmtPct(t.consultBookedPct));
-    setByKpi('noconsult', fmtPct(t.noConsultPct));
+    setByLabel('total surveys', t.total);
+    setByLabel('low-score count', t.lowScore);
+    setByKpi('booked', fmtPct(t.consultationBookedPct));
+    setByKpi('noconsult', fmtPct(t.noConsultationPct));
     setByKpi('retained', fmtPct(t.retainedPct));
     const synced=document.querySelector('#page-title')&&document.querySelector('header p');
     if(synced) synced.textContent='Last synced: '+new Date(DATA.syncedAt).toLocaleString();
