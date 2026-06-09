@@ -3,6 +3,8 @@
 <style id="bre-antiflash-css">
 /* Hide hardcoded demo content until live data has rendered, killing the flash */
 /* Hide hardcoded demo values until live data has rendered (kills the flash, pre-paint via CSS) */
+body:not([data-live-ready]) #page-overview .text-base,
+body:not([data-live-ready]) #page-overview .font-bold,
 body:not([data-live-ready]) #page-overview .text-3xl,
 body:not([data-live-ready]) #page-overview .text-2xl,
 body:not([data-live-ready]) #page-overview .text-brand-gold,
