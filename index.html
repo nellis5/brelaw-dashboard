@@ -333,4 +333,83 @@ if(document.readyState!=='loading') init(); else document.addEventListener('DOMC
 window.addEventListener('load',function(){ if(D) setTimeout(renderAll,100); });
 })();
 </script>
+<script>
+/* ===== BRE LAW FINAL CORRECTIVE PASS (authoritative live override) ===== */
+(function(){
+  var API="https://brelaw-dashboard-api-production.up.railway.app";
+  var DASH='\u2014';
+  var LIVE=null;
+  function qa(s){return Array.prototype.slice.call(document.querySelectorAll(s));}
+  function fmtPct(v){return (v==null)?DASH:(v+'%');}
+  function fmtNum(v){return (v==null)?DASH:v;}
+  /* Set a funnel/KPI card value by matching its uppercase label text */
+  function setCardByLabel(labelText, value, sub){
+    var lbls=qa('#page-overview .uppercase');
+    for(var i=0;i<lbls.length;i++){
+      if(lbls[i].textContent.trim().toLowerCase()===labelText.toLowerCase()){
+        var card=lbls[i].closest('.rounded-xl')||lbls[i].parentElement;
+        var big=card.querySelector('.text-3xl');
+        if(big) big.textContent=value;
+        if(sub!=null){
+          var smalls=card.querySelectorAll('.text-base,[class*="text-[11px]"]');
+          var s=smalls[smalls.length-1];
+          if(s && s!==lbls[i]) s.textContent=sub;
+        }
+        return;
+      }
+    }
+  }
+  /* Destroy any Chart.js instance bound to a canvas id, then show 'No data yet' */
+  function emptyCanvas(id){
+    var c=document.getElementById(id);
+    if(!c) return;
+    try{ var inst=(window.Chart&&Chart.getChart)?Chart.getChart(c):null; if(inst) inst.destroy(); }catch(e){}
+    c.style.display='none';
+    var box=c.parentElement;
+    if(box && !box.querySelector('.bre-corrective-nodata')){
+      var d=document.createElement('div');
+      d.className='bre-corrective-nodata text-center text-brand-charcoal/40 text-sm py-12';
+      d.textContent='No data yet';
+      box.appendChild(d);
+    }
+  }
+  function clearEmpty(id){
+    var c=document.getElementById(id); if(!c) return;
+    var box=c.parentElement; var nd=box&&box.querySelector('.bre-corrective-nodata');
+    if(nd) nd.remove(); c.style.display='';
+  }
+  function forceLive(){
+    if(!LIVE) return;
+    var t=LIVE.totals||{};
+    /* Funnel KPI cards (handle both original and relabeled text) */
+    setCardByLabel('% signed', fmtPct(t.consultBookedPct), (t.totalSurveys?(Math.round((t.consultBookedPct/100)*t.totalSurveys)+' of '+t.totalSurveys+' scheduled a consultation'):'No data yet'));
+    setCardByLabel('consultation booked', fmtPct(t.consultBookedPct), (t.totalSurveys?(Math.round((t.consultBookedPct/100)*t.totalSurveys)+' of '+t.totalSurveys+' scheduled a consultation'):'No data yet'));
+    setCardByLabel('hire rate', fmtPct(t.retainedPct), 'Of booked consults, hired & retained BRE Law');
+    setCardByLabel('retained / signed', fmtPct(t.retainedPct), 'Of booked consults, hired & retained BRE Law');
+    /* Lead Source */
+    var ls=LIVE.leadSource||{};
+    var lsVal = (ls.phonePct==null||(ls.phonePct===0&&ls.websitePct===0)) ? DASH : (ls.phonePct+'% Phone');
+    var lsSub = (ls.websitePct==null||(ls.phonePct===0&&ls.websitePct===0)) ? 'No data yet' : (ls.websitePct+'% via website');
+    setCardByLabel('lead source', lsVal, lsSub);
+    /* If no data, force the demo overview charts empty */
+    var m=LIVE.monthly||{labels:[]};
+    if(!(m.labels&&m.labels.length)){ emptyCanvas('overviewVolume'); } else { clearEmpty('overviewVolume'); }
+    var bc=(LIVE.ratings&&LIVE.ratings.byCategory)||{};
+    var hasRadar=[bc.friendliness,bc.overall,bc.consultExp,bc.responsiveness,bc.knowledge].some(function(x){return x!=null;});
+    if(!hasRadar){ emptyCanvas('overviewMix'); } else { clearEmpty('overviewMix'); }
+  }
+  function load(cb){
+    fetch(API.replace(/\/$/,'')+'/api/dashboard').then(function(r){return r.json();}).then(function(d){ LIVE=d; if(cb) cb(); forceLive(); }).catch(function(e){ console.warn('[BRELaw corrective] load failed',e); });
+  }
+  /* Override doLogin so charts/KPIs are corrected right after entering the app */
+  var prevLogin=window.doLogin;
+  window.doLogin=function(){
+    if(typeof prevLogin==='function'){ try{ prevLogin(); }catch(e){} }
+    if(LIVE){ forceLive(); setTimeout(forceLive,150); }
+    else { load(); setTimeout(forceLive,300); }
+  };
+  if(document.readyState!=='loading') load(); else document.addEventListener('DOMContentLoaded',function(){load();});
+  window.addEventListener('load',function(){ setTimeout(forceLive,250); setTimeout(forceLive,800); });
+})();
+</script>
 </body></html>
