@@ -787,3 +787,65 @@ window.addEventListener('load',function(){ if(D) setTimeout(renderAll,100); });
   };
 })();
 </script>
+
+<script>
+/* ===== BRE LAW LOGIN GATE — HARD ENFORCEMENT (binds directly to DOM) ===== */
+(function(){
+  var EMAIL='cellis@brelaw.com';
+  var PASS='Survey*202';
+  function $(id){ return document.getElementById(id); }
+  function authed(){ try{ return localStorage.getItem('bre_authed')==='1'; }catch(e){ return false; } }
+  function showError(show){
+    var err=$('login-error');
+    if(err){ if(show) err.classList.remove('hidden'); else err.classList.add('hidden'); }
+  }
+  function reveal(){
+    var ls=$('login-screen'), app=$('app');
+    if(ls) ls.style.display='none';
+    if(app) app.style.display='flex';
+    try{ if(typeof initOverviewCharts==='function') initOverviewCharts(); }catch(e){}
+  }
+  function attempt(){
+    var emailEl=$('login-email'), passEl=$('login-pass');
+    var email=((emailEl&&emailEl.value)||'').trim().toLowerCase();
+    var pass=(passEl&&passEl.value)||'';
+    if(email===EMAIL.toLowerCase() && pass===PASS){
+      showError(false);
+      try{ localStorage.setItem('bre_authed','1'); }catch(e){}
+      reveal();
+    } else {
+      showError(true);
+      if(passEl) passEl.value='';
+    }
+    return false;
+  }
+  /* Override the global so any legacy caller is also gated */
+  window.doLogin=attempt;
+  function bind(){
+    /* Reveal immediately if already authenticated (e.g. after auto-refresh reload) */
+    if(authed()){ reveal(); return; }
+    /* Make sure the login screen is actually shown for unauthenticated users */
+    var ls=$('login-screen'), app=$('app');
+    if(ls) ls.style.display='';
+    if(app) app.style.display='none';
+    /* Bind the real Sign In button directly, replacing any inline handler */
+    var btn=null;
+    var cands=document.querySelectorAll('button, [role=button], a');
+    for(var i=0;i<cands.length;i++){
+      if(/^\s*sign in\s*$/i.test((cands[i].textContent||''))){ btn=cands[i]; break; }
+    }
+    if(btn){
+      btn.onclick=function(e){ if(e&&e.preventDefault) e.preventDefault(); return attempt(); };
+    }
+    /* Enter key on the login screen submits through the gate */
+    document.addEventListener('keydown',function(e){
+      if(e.key==='Enter'){
+        var screen=$('login-screen');
+        if(screen && screen.style.display!=='none'){ e.preventDefault(); attempt(); }
+      }
+    });
+  }
+  if(document.readyState!=='loading') bind();
+  else document.addEventListener('DOMContentLoaded', bind);
+})();
+</script>
