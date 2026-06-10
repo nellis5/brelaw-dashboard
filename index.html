@@ -16,7 +16,7 @@ body:not([data-live-ready]) #page-notsigned .text-2xl,
 body:not([data-live-ready]) #page-responses tbody{visibility:hidden!important;}
 body:not([data-live-ready]) .page canvas{visibility:hidden!important;}
   /* Bulletproof: hide ALL app content until live data is ready, so hardcoded demo values can never flash */
-  body:not([data-live-ready]) #app{opacity:0!important;}
+    /* removed #app opacity hide — it caused full white screen when reveal failed; targeted hides above handle the flash */
   #app{transition:opacity .15s ease;}
 </style>
 <script>
