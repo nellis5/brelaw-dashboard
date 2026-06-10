@@ -66,7 +66,7 @@ body:not([data-live-ready]) .page canvas{visibility:hidden!important;}
   var poll=setInterval(function(){
     tries++;
     if(liveRendered()){ clearInterval(poll); ready(); }
-    else if(tries>=40){ clearInterval(poll); ready(); } /* ~8s fallback so it never stays hidden */
+    else if(tries>=2){ clearInterval(poll); ready(); } /* ~8s fallback so it never stays hidden */
   },200);
 })();
 </script>
