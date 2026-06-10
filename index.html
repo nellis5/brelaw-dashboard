@@ -893,3 +893,70 @@ window.addEventListener('load',function(){ if(D) setTimeout(renderAll,100); });
   setTimeout(function(){ try{ mo.disconnect(); }catch(e){} clearInterval(guard); },12000);
 })();
 </script>
+
+<script>
+/* ===== BRE LAW CHART ENGINE v2 (authoritative, runs last) ===== */
+(function(){
+var API="https://brelaw-dashboard-api-production.up.railway.app";
+var GOLD='#B89968',NAVY='#0F1419',GOLD2='#C9A574',BORD='#E8E4DC';
+var PAL=[GOLD,NAVY,GOLD2,'#8B7355','#D4C5A9'];
+var MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var D=null,CH={};
+function byId(id){return document.getElementById(id);}
+function killCanvas(id){var c=byId(id);if(!c)return;try{var inst=(window.Chart&&Chart.getChart)?Chart.getChart(c):null;if(inst)inst.destroy();}catch(e){}if(CH[id]){try{CH[id].destroy();}catch(e2){}delete CH[id];}}
+function clearNote(box){if(!box)return;var n=box.querySelector('.bre-note');if(n)n.remove();}
+function note(id,msg){var c=byId(id);if(!c)return;killCanvas(id);c.style.display='none';var box=c.parentElement;clearNote(box);var d=document.createElement('div');d.className='bre-note text-center text-brand-charcoal/40 text-sm py-12';d.textContent=msg||'Not enough data yet';box.appendChild(d);}
+function mk(id,cfg){var c=byId(id);if(!c)return;killCanvas(id);var box=c.parentElement;clearNote(box);c.style.display='';CH[id]=new Chart(c,cfg);}
+/* Build rolling month axis: from earliest data month through current month (max 12). */
+function buildAxis(apiLabels){
+var now=new Date();var curY=now.getFullYear(),curM=now.getMonth();
+var startIdx=null;
+if(apiLabels&&apiLabels.length){for(var i=0;i<MN.length;i++){if(apiLabels.indexOf(MN[i])>=0){startIdx=i;break;}}}
+if(startIdx===null)startIdx=curM;
+var count=(curM-startIdx)+1;if(count<1)count=1;if(count>12)count=12;
+var startM=curM-(count-1);
+var labels=[],keys=[];
+for(var k=0;k<count;k++){var mm=((startM+k)%12+12)%12;labels.push(MN[mm]);keys.push(MN[mm]);}
+return {labels:labels,keys:keys};
+}
+/* Map API monthly data (sparse, keyed by month name) onto the axis. */
+function mapSeries(axisKeys,apiLabels,apiData){var out=[];for(var i=0;i<axisKeys.length;i++){var idx=apiLabels?apiLabels.indexOf(axisKeys[i]):-1;out.push(idx>=0?(apiData[idx]||0):0);}return out;}
+function hasMulti(axis){return axis.labels.length>=2;}
+/* ----- OVERVIEW charts ----- */
+function renderOverviewCharts(){
+if(!D)return;var m=D.monthly||{};var axis=buildAxis(m.labels||[]);
+if(hasMulti(axis)){var vol=mapSeries(axis.keys,m.labels,m.volume||[]);var sch=mapSeries(axis.keys,m.labels,m.scheduled||[]);
+mk('overviewVolume',{type:'line',data:{labels:axis.labels,datasets:[{label:'Total Surveys',data:vol,borderColor:GOLD,backgroundColor:GOLD+'20',fill:true,tension:0.3,pointRadius:4,pointBackgroundColor:GOLD,borderWidth:2},{label:'Scheduled',data:sch,borderColor:NAVY,backgroundColor:NAVY+'10',fill:true,tension:0.3,pointRadius:3,pointBackgroundColor:NAVY,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:16}}},scales:{y:{beginAtZero:true,ticks:{precision:0},grid:{color:BORD},border:{display:false}},x:{grid:{display:false},border:{display:false}}}});
+}else{note('overviewVolume','Trend begins once you have 2+ months of data');}
+var bc=(D.ratings&&D.ratings.byCategory)||{};var radar=[bc.friendliness,bc.overall,bc.consultExp,bc.responsiveness,bc.knowledge];
+if(radar.some(function(x){return x!=null;})){mk('overviewMix',{type:'radar',data:{labels:['Friendliness','Overall','Consultation Experience','Responsiveness','Knowledge'],datasets:[{label:'Average',data:radar.map(function(x){return x==null?0:x;}),borderColor:GOLD,backgroundColor:GOLD+'30',pointBackgroundColor:GOLD,pointRadius:4,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,scales:{r:{beginAtZero:true,max:5,ticks:{stepSize:1,display:false},grid:{color:BORD},pointLabels:{font:{size:11}}}},plugins:{legend:{display:false}}}});}else{note('overviewMix','No ratings yet');}
+}
+/* ----- RATINGS charts ----- */
+function renderRatingsCharts(){
+if(!D)return;var m=D.monthly||{};var axis=buildAxis(m.labels||[]);
+if(hasMulti(axis)){var vol=mapSeries(axis.keys,m.labels,m.volume||[]);
+mk('ratingTrends',{type:'line',data:{labels:axis.labels,datasets:[{label:'Survey Volume',data:vol,borderColor:GOLD,backgroundColor:GOLD+'20',fill:true,tension:0.3,pointRadius:4,pointBackgroundColor:GOLD,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:12,font:{size:10}}}},scales:{y:{beginAtZero:true,ticks:{precision:0},grid:{color:BORD},border:{display:false}},x:{grid:{display:false},border:{display:false}}}});
+}else{note('ratingTrends','Trend begins once you have 2+ months of data');}
+var dist=(D.ratings&&D.ratings.distribution)||[0,0,0,0,0];
+if(dist.some(function(x){return x>0;})){mk('ratingDist',{type:'bar',data:{labels:['1','2','3','4','5'],datasets:[{label:'Count',data:dist,backgroundColor:[NAVY,'#4A4A4A','#8B7355',GOLD2,GOLD],borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0},grid:{color:BORD},border:{display:false}},x:{grid:{display:false},border:{display:false}}}});}else{note('ratingDist','No ratings yet');}
+}
+/* ----- NOT SIGNED charts ----- */
+function renderNotSignedCharts(){
+if(!D)return;var ns=D.notSigned||{reasons:[]};var reasons=ns.reasons||[];
+var nz=reasons.filter(function(r){return r.count>0;});
+if(nz.length){mk('reasonsChart',{type:'bar',data:{labels:nz.map(function(r){return r.reason;}),datasets:[{label:'Count',data:nz.map(function(r){return r.count;}),backgroundColor:GOLD,borderRadius:6,barThickness:18}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{precision:0},grid:{color:BORD},border:{display:false}},y:{grid:{display:false},border:{display:false}}}});}else{note('reasonsChart','No no-schedule reasons yet');}
+var m=D.monthly||{};var axis=buildAxis(m.labels||[]);var mr=m.reasons||[];
+var anyReason=mr.some(function(s){return (s.data||[]).some(function(x){return x>0;});});
+if(hasMulti(axis)&&anyReason){mk('reasonsTrend',{type:'bar',data:{labels:axis.labels,datasets:mr.map(function(s,idx){return {label:s.reason,data:mapSeries(axis.keys,m.labels,s.data||[]),backgroundColor:PAL[idx%PAL.length],borderRadius:4};})},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:10,font:{size:10}}}},scales:{y:{beginAtZero:true,ticks:{precision:0},grid:{color:BORD},border:{display:false},stacked:true},x:{grid:{display:false},border:{display:false},stacked:true}}});}else{note('reasonsTrend','Trend begins once you have 2+ months of data');}
+}
+/* ----- orchestration ----- */
+function renderAllCharts(){try{renderOverviewCharts();}catch(e){}try{renderRatingsCharts();}catch(e){}try{renderNotSignedCharts();}catch(e){}}
+function waitChartThenRender(){if(window.Chart){renderAllCharts();}else{setTimeout(waitChartThenRender,200);}}
+function boot(){fetch(API.replace(/\/$/,'')+'/api/dashboard').then(function(r){return r.json();}).then(function(d){D=d;waitChartThenRender();setTimeout(renderAllCharts,400);setTimeout(renderAllCharts,1200);}).catch(function(e){console.warn('[BRELaw chartv2] fetch failed',e);});}
+/* Re-render whenever the user navigates between pages. */
+function hookNav(){var orig=window.showPage;window.showPage=function(p){if(typeof orig==='function'){try{orig(p);}catch(e){}}setTimeout(function(){if(p==='overview')renderOverviewCharts();else if(p==='ratings')renderRatingsCharts();else if(p==='notsigned')renderNotSignedCharts();},60);};var ol=window.doLogin;window.doLogin=function(){if(typeof ol==='function'){try{ol();}catch(e){}}setTimeout(renderAllCharts,120);};}
+function start(){hookNav();boot();}
+if(document.readyState!=='loading')start();else document.addEventListener('DOMContentLoaded',start);
+window.addEventListener('load',function(){setTimeout(function(){if(D)renderAllCharts();},300);});
+})();
+</script>
