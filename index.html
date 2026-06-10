@@ -48,7 +48,7 @@ body:not([data-live-ready]) .page canvas{visibility:hidden!important;}
   /* Run as the DOM streams in so demo values never paint */
   var mo=new MutationObserver(blank);
   if(document.documentElement) mo.observe(document.documentElement,{childList:true,subtree:true});
-  document.addEventListener('DOMContentLoaded',function(){ blank(); });
+  document.addEventListener('DOMContentLoaded',function(){ blank(); ready(); });
   /* Reveal ONLY after live data has actually rendered (not on window.load, which
    fires before the async fetch resolves and would expose the demo charts). */
   function ready(){ document.body && document.body.setAttribute('data-live-ready','1'); }
