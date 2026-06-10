@@ -42,13 +42,13 @@ body:not([data-live-ready]) .page canvas{visibility:hidden!important;}
       }
       /* Wipe demo rows from the responses table */
       var tb=document.querySelector('#page-responses tbody');
-      if(tb && !tb.__bz){ tb.__bz=1; tb.innerHTML=''; }
+      if(tb && !tb.__bz){ tb.__bz=1; tb.innerHTML=''; } if(ov){ ov.querySelectorAll('p').forEach(function(p){ if(p.__bz) return; var x=p.textContent; if(/\d+\s+of\s+\d+|2 min ago|57\.5%|68\.3%/.test(x)){ p.__bz=1; p.textContent=''; } }); } if(true){ var _z=document.querySelector('#page-responses tbody'); }
     }catch(e){}
   }
   /* Run as the DOM streams in so demo values never paint */
   var mo=new MutationObserver(blank);
   if(document.documentElement) mo.observe(document.documentElement,{childList:true,subtree:true});
-  document.addEventListener('DOMContentLoaded',function(){ blank(); ready(); });
+  document.addEventListener('DOMContentLoaded',function(){ blank(); });
   /* Reveal ONLY after live data has actually rendered (not on window.load, which
    fires before the async fetch resolves and would expose the demo charts). */
   function ready(){ document.body && document.body.setAttribute('data-live-ready','1'); }
@@ -66,7 +66,7 @@ body:not([data-live-ready]) .page canvas{visibility:hidden!important;}
   var poll=setInterval(function(){
     tries++;
     if(liveRendered()){ clearInterval(poll); ready(); }
-    else if(tries>=2){ clearInterval(poll); ready(); } /* ~8s fallback so it never stays hidden */
+    else if(tries>=50){ clearInterval(poll); ready(); } /* ~8s fallback so it never stays hidden */
   },200);
 })();
 </script>
