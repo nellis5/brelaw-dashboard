@@ -960,3 +960,28 @@ if(document.readyState!=='loading')start();else document.addEventListener('DOMCo
 window.addEventListener('load',function(){setTimeout(function(){if(D)renderAllCharts();},300);});
 })();
 </script>
+
+<script>
+/* ===== FINAL RADAR + VOLUME FIX (authoritative) ===== */
+(function(){
+  var API="https://brelaw-dashboard-api-production.up.railway.app";
+  var GOLD='#B89968', BORD='#E8E4DC';
+  function kill(id){var c=document.getElementById(id);if(!c)return;try{var i=(window.Chart&&Chart.getChart)?Chart.getChart(c):null;if(i)i.destroy();}catch(e){}return c;}
+  function note(id,msg){var c=kill(id);if(!c)return;c.style.display='none';var box=c.parentElement;if(box&&!box.querySelector('.bre-fix-note')){var d=document.createElement('div');d.className='bre-fix-note text-center text-brand-charcoal/40 text-sm py-12';d.textContent=msg;box.appendChild(d);}}
+  function draw(){
+    fetch(API+'/api/dashboard').then(function(r){return r.json();}).then(function(D){
+      var bc=(D.ratings&&D.ratings.byCategory)||{};
+      var radar=[bc.friendliness,bc.overall,bc.consultExp,bc.responsiveness,bc.knowledge].map(function(x){return x==null?0:x;});
+      var c=kill('overviewMix');
+      if(c){c.style.display='';var box=c.parentElement;var n=box&&box.querySelector('.bre-fix-note');if(n)n.remove();
+        new Chart(c,{type:'radar',data:{labels:['Friendliness','Overall','Consultation Experience','Responsiveness','Knowledge'],datasets:[{label:'Average',data:radar,borderColor:GOLD,backgroundColor:GOLD+'30',pointBackgroundColor:GOLD,pointRadius:4,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,scales:{r:{suggestedMin:0,suggestedMax:5,ticks:{stepSize:1,display:false},grid:{color:BORD}}},plugins:{legend:{display:false}}}});
+      }
+      var m=D.monthly||{labels:[]};
+      if(!(m.labels&&m.labels.length>=2)) note('overviewVolume','Not enough data yet \u2014 trend begins once you have 2+ months of surveys');
+    }).catch(function(e){});
+  }
+  function go(){ if(window.Chart) setTimeout(draw,600); else setTimeout(go,200); }
+  if(document.readyState!=='loading') go(); else document.addEventListener('DOMContentLoaded',go);
+  window.addEventListener('load',function(){setTimeout(draw,800);});
+})();
+</script>
