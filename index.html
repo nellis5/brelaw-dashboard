@@ -985,3 +985,46 @@ window.addEventListener('load',function(){setTimeout(function(){if(D)renderAllCh
   window.addEventListener('load',function(){setTimeout(draw,800);});
 })();
 </script>
+<script>
+/* ===== BRE LAW MASTER RESET / EMPTY-STATE (authoritative, runs continuously) ===== */
+(function(){
+  var DASH='\u2014';
+  function blankKpis(){
+    document.querySelectorAll('.page .text-3xl, .page .text-2xl').forEach(function(big){
+      if(big.__live) return;
+      var unit=big.querySelector('span');
+      if(big.childNodes.length && big.childNodes[0].nodeType===3){ big.childNodes[0].nodeValue=DASH+' '; }
+      else if(!unit){ big.textContent=DASH; }
+    });
+    document.querySelectorAll('.text-brand-gold').forEach(function(el){
+      if(/^[\u2605\u2606\s]+$/.test(el.textContent.trim())) el.textContent='';
+    });
+    document.querySelectorAll('.page p').forEach(function(p){
+      var t=(p.textContent||'').trim();
+      if(/\d+(\.\d+)?%\s*\(\d+\s+of\s+\d+\)/.test(t) || /^\d{2,4}$/.test(t)){ if(!p.__live) p.textContent=DASH; }
+    });
+  }
+  function wipeRows(){
+    var tb=document.querySelector('#page-responses tbody');
+    if(tb && !tb.__live){ tb.innerHTML='<tr><td colspan="99" style="padding:24px;text-align:center;opacity:.55">No survey responses yet</td></tr>'; }
+  }
+  function note(id,msg){
+    var c=document.getElementById(id); if(!c) return;
+    try{ var inst=(window.Chart&&Chart.getChart)?Chart.getChart(c):null; if(inst) inst.destroy(); }catch(e){}
+    c.style.display='none';
+    var box=c.parentElement; if(!box) return;
+    if(!box.querySelector('.bre-empty-note')){ var n=document.createElement('div'); n.className='bre-empty-note'; n.style.cssText='padding:48px 12px;text-align:center;opacity:.5;font-size:14px;'; n.textContent=msg; box.appendChild(n); }
+  }
+  function emptyCharts(){
+    note('overviewVolume','No data yet');
+    note('overviewMix','No data yet');
+    note('ratingsTrend','No data yet');
+    note('ratingsDist','No data yet');
+    note('notSignedReasons','No data yet');
+  }
+  function reset(){ try{ blankKpis(); wipeRows(); emptyCharts(); }catch(e){} }
+  function start(){ reset(); setInterval(reset, 2000); }
+  if(document.readyState!=='loading') start(); else document.addEventListener('DOMContentLoaded',start);
+  window.addEventListener('load',function(){ setTimeout(reset,400); });
+})();
+</script>
